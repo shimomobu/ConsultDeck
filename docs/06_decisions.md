@@ -18,7 +18,7 @@
 
 - Status: Accepted
 - Phase: 0
-- Decision: Rendererは`render(spec: SlideSpec) -> Path`の境界で差し替え可能にする。
+- Decision: Rendererは`render(spec: SlideSpec, template: TemplateSpec, output_dir: Path) -> Path`の境界で差し替え可能にする。
 - Rationale: 内蔵Rendererと外部Rendererを同じアプリケーション層から扱い、PPTX生成方式の変更を局所化する。
 
 ## Decision 004: MCP経由のPPT生成を将来拡張として考慮する
@@ -92,3 +92,11 @@
 - Phase: 4.5
 - Decision: SlideBuilder.build()は任意のdeck_idを受け取り、未指定時はUUID由来の衝突しにくいIDを生成する。
 - Rationale: テストや再現性が必要な経路では固定IDを使い、通常生成ではテンプレートID由来の固定ID衝突を避ける。
+
+## Decision 014: Builtin PPTX Rendererは最小編集可能PPTXを生成する
+
+- Status: Accepted
+- Phase: 5
+- Decision: BuiltinPptxRendererはpython-pptxをRenderer層に閉じ込め、SlideSpecとTemplateSpecから編集可能な`.pptx`を生成する。
+- Rationale: Phase 5では見た目の完成度より、Renderer境界、実ファイル生成、スライド数一致、基本layout処理を優先する。
+- Details: 出力ファイル名は`spec.deck_id + ".pptx"`とする。TITLE、CONTENT、TWO_COLUMN、BLANKの最小レイアウトだけを処理する。

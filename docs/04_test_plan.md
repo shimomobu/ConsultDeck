@@ -145,7 +145,7 @@ def test_slide_generator_produces_correct_count(mock_llm_client):
 
 | テスト対象           | テスト内容                                   | ファイル                                           |
 | --------------- | --------------------------------------- | ---------------------------------------------- |
-| BuiltinRenderer | PPTX生成、スライド枚数一致、タイトル埋め込み、拡張子検証    | `tests/unit/renderer/test_builtin_renderer.py` |
+| BuiltinPptxRenderer | PPTX生成、スライド枚数一致、タイトル埋め込み、拡張子検証 | `tests/unit/renderer/test_builtin_pptx_renderer.py` |
 | McpAdapter      | SlideSpec → McpPayload変換、フィールドマッピング正確性 | `tests/unit/renderer/test_mcp_adapter.py`      |
 | McpRenderer     | フォールバック動作（接続失敗 → BuiltinRenderer）    | `tests/unit/renderer/test_mcp_renderer.py`     |
 | RendererFactory | active設定でRenderer切替                    | `tests/unit/renderer/test_factory.py`          |
@@ -241,7 +241,7 @@ tests/
 │   │   ├── test_slide_generator.py
 │   │   └── test_reviewer.py
 │   └── renderer/
-│       ├── test_builtin_renderer.py
+│       ├── test_builtin_pptx_renderer.py
 │       ├── test_mcp_adapter.py
 │       ├── test_mcp_renderer.py
 │       └── test_factory.py

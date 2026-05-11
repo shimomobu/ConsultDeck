@@ -226,12 +226,12 @@ TDDで各モデルのバリデーションテストを先行作成する。
 
 ---
 
-### P5-2: BuiltinRenderer
+### P5-2: BuiltinPptxRenderer
 
 | タスク   | 内容                                                 |
 | ----- | ---------------------------------------------------- |
-| P5-2-T | `tests/unit/renderer/test_builtin_renderer.py` 作成  |
-| P5-2-I | `src/consultdeck/renderer/builtin_renderer.py` 実装  |
+| P5-2-T | `tests/unit/renderer/test_builtin_pptx_renderer.py` 作成  |
+| P5-2-I | `src/consultdeck/renderer/builtin_pptx_renderer.py` 実装  |
 
 テスト対象:
 - SlideSpecからPPTXファイルが生成されること

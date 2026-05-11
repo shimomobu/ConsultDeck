@@ -196,12 +196,12 @@ output/deck.pptx
 │  SlideGenerator → SlideSpec            │
 │  Reviewer → ReviewResult               │
 └──────────────────┬──────────────────────┘
-                   │ SlideSpec のみ渡す
+                   │ SlideSpec + TemplateSpec + output_dir
 ┌──────────────────▼──────────────────────┐
 │         Renderer Interface              │
-│  render(spec: SlideSpec) -> Path        │
+│  render(spec, template, output_dir) -> Path │
 └──────────┬──────────────────────────────┘
-           ├── BuiltinRenderer (python-pptx)
+           ├── BuiltinPptxRenderer (python-pptx)
            └── McpRenderer
                 ├── McpAdapter (変換のみ)
                 └── McpClient (HTTP / stdio)
@@ -211,12 +211,17 @@ output/deck.pptx
 
 ```python
 class Renderer(ABC):
-    def render(self, spec: SlideSpec) -> Path:
+    def render(
+        self,
+        spec: SlideSpec,
+        template: TemplateSpec,
+        output_dir: Path,
+    ) -> Path:
         ...
 ```
 
-- SlideSpec以外の情報（LLM・テンプレートYAML等）はRendererに渡さない
-- RendererはSlideSpecのフィールドのみを参照してPPTXを生成する
+- RendererはSlideSpecを主入力とし、TemplateSpecの最小スタイル情報と出力先ディレクトリを受け取る
+- RendererはLLM・GPU・UI・テンプレートRepositoryに依存しない
 - RendererはUI・LLM・GPU制御に関与しない
 
 ---
@@ -296,7 +301,7 @@ consultdeck/
 │       │   └── selector.py           # TemplateSelector
 │       ├── renderer/
 │       │   ├── base.py               # Renderer ABC
-│       │   ├── builtin_renderer.py   # BuiltinRenderer
+│       │   ├── builtin_pptx_renderer.py # BuiltinPptxRenderer
 │       │   ├── mcp_adapter.py        # McpAdapter
 │       │   ├── mcp_renderer.py       # McpRenderer
 │       │   └── factory.py            # RendererFactory

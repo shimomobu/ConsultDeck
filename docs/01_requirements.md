@@ -125,15 +125,15 @@ SlideSpecを入力としてPPTXを生成する。
 | レイアウト      | テンプレートのlayout_rulesを適用      |
 | 画像配置       | PNGを指定位置に差し込み               |
 | 図形         | 可能な限りPPTネイティブ図形（テキストボックス等） |
-| Renderer分離 | RendererはSlideSpecのみを受け取る   |
+| Renderer分離 | RendererはSlideSpecを主入力とし、TemplateSpecと出力先を受け取る |
 
 ---
 
 ## 8. Renderer仕様
 
-### 内蔵Renderer（BuiltinRenderer）
+### 内蔵Renderer（BuiltinPptxRenderer）
 
-python-pptxを使用してSlideSpecからPPTXを生成する。
+python-pptxを使用してSlideSpecとTemplateSpecからPPTXを生成する。
 
 ### MCP Renderer（McpRenderer）
 
@@ -143,8 +143,8 @@ SlideSpecをMCP呼び出し用入力形式に変換し、外部PPT生成サー�
 | ------- | ---------------------------------- |
 | アダプタ    | SlideSpec → MCP入力形式への変換            |
 | 接続先変更   | 設定ファイルおよびCLIオプションから変更可能            |
-| 有効/無効切替 | BuiltinRenderer / McpRenderer を切り替え |
-| フォールバック | MCP不可時はBuiltinRendererへ自動切替        |
+| 有効/無効切替 | BuiltinPptxRenderer / McpRenderer を切り替え |
+| フォールバック | MCP不可時はBuiltinPptxRendererへ自動切替        |
 | 認証情報    | 環境変数または設定ファイル（平文禁止）                |
 | ログ      | 呼び出し結果・失敗理由を記録                     |
 
