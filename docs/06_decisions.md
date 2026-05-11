@@ -135,3 +135,10 @@
 - Phase: 6
 - Decision: `python -m consultdeck`はCLI引数をRequirementSpecへ変換し、Pipelineへ委譲してPPTXのPathを表示する。
 - Rationale: CLI、Pipeline、Rendererの責務を分け、GPU、Stable Diffusion、MCP、LLM本文生成を使わない細いend-to-end経路を先に固定する。
+
+## Decision 020: CLIはeditable install後のconsole scriptを正式入口にする
+
+- Status: Accepted
+- Phase: 6.5
+- Decision: `consultdeck` console scriptを`consultdeck.__main__:main`へ接続し、`python -m consultdeck`も維持する。
+- Rationale: 利用者が`PYTHONPATH=src`を設定せずにCLIを実行できるようにしつつ、開発時のmodule entrypointも残す。

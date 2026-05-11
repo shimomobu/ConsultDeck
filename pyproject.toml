@@ -17,6 +17,9 @@ dependencies = [
     "PyYAML>=6.0",
 ]
 
+[project.scripts]
+consultdeck = "consultdeck.__main__:main"
+
 [project.optional-dependencies]
 dev = [
     "pytest>=8.0",
@@ -41,3 +44,15 @@ source = ["consultdeck"]
 [tool.coverage.report]
 show_missing = true
 skip_empty = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/consultdeck"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "src/consultdeck",
+    "assets/templates",
+    "docs",
+    "README.md",
+    "pyproject.toml",
+]

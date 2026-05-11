@@ -28,3 +28,4 @@
 | R-016 | Slide.notesがPPTXへ出力されない | レビュー・発表用メモが成果物から欠落する | High | Phase 5.5でPowerPoint発表者ノートへ反映済み | Phase 5.5 | Mitigated |
 | R-017 | python-pptx依存がRenderer以外へ漏れる | Renderer境界が崩れ、モデル・パイプラインがPPTX実装に依存する | High | dependency boundary testで`src/consultdeck/renderer/`配下に限定 | Phase 5 | Mitigated |
 | R-018 | dependency boundary testがCWDに依存する | 別CWDからpytestを実行した際に検出漏れが起きる | Medium | Phase 5.5でテストファイル位置からproject rootを解決する方式へ修正 | Phase 5.5 | Mitigated |
+| R-019 | CLI実行がPYTHONPATHに依存する | editable install後でも利用者が環境変数を設定しないとCLIを実行できない | High | Phase 6.5でconsole scriptとpackaging設定を追加し、`consultdeck`コマンドを提供 | Phase 6.5 | Mitigated |
