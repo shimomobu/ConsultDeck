@@ -71,3 +71,11 @@
 - Phase: 3.5
 - Decision: OutlineSpecの正式構造は`slides: list[OutlineItem]`のみとし、旧`sections`構造は廃止する。
 - Rationale: 後続のSlideSpec生成で入力構造が二重化すると責務と変換ルールが曖昧になるため、外部利用者がいない現段階でbreaking changeとして整理する。
+
+## Decision 011: SlideBuilderは決定論的な仮本文でSlideSpecを生成する
+
+- Status: Accepted
+- Phase: 4
+- Decision: SlideBuilderはRequirementSpec、OutlineSpec、TemplateSpecからRenderer入力契約であるSlideSpecを生成し、LLM本文生成はまだ行わない。
+- Rationale: Renderer境界に渡す構造を先に固定し、後続のLLM生成やレビュー処理をSlideSpec契約に合わせて追加できる状態にする。
+- Details: slide_idとtitleはOutlineItem由来とする。message、bullets、notesは決定論的な仮文を生成する。layout_typeはMVPではroleの簡易ルールで決定し、未該当はcontentとする。

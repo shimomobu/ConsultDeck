@@ -47,6 +47,17 @@ def test_slide_spec_rejects_unknown_layout_type() -> None:
         )
 
 
+def test_slide_rejects_empty_bullets() -> None:
+    with pytest.raises(ValidationError):
+        Slide(
+            slide_id="slide-001",
+            title="現状課題",
+            message="属人化により意思決定が遅延している",
+            bullets=[],
+            layout_type=LayoutType.CONTENT,
+        )
+
+
 def test_slide_spec_json_roundtrip() -> None:
     spec = _sample_slide_spec()
 

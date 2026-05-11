@@ -28,7 +28,7 @@ class Slide(BaseModel):
     slide_id: NonBlankString
     title: NonBlankString
     message: NonBlankString
-    bullets: list[str] = Field(default_factory=list)
+    bullets: list[str] = Field(min_length=1)
     diagram: DiagramSpec | None = None
     image: ImageSpec | None = None
     notes: str | None = None
