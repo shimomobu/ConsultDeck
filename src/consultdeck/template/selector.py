@@ -14,17 +14,17 @@ class TemplateSelector:
         requirement: RequirementSpec,
         templates: list[TemplateSpec],
     ) -> list[TemplateSpec]:
-        requirement_doc_type = self.normalize_doc_type(requirement.purpose)
+        requirement_doc_type = self._normalize_doc_type(requirement.purpose)
         requirement_audience = self._normalize_audience(requirement.audience)
 
         return [
             template
             for template in templates
-            if self.normalize_doc_type(template.doc_type) == requirement_doc_type
+            if self._normalize_doc_type(template.doc_type) == requirement_doc_type
             and self._normalize_audience(template.audience) == requirement_audience
         ]
 
-    def normalize_doc_type(self, value: str) -> str:
+    def _normalize_doc_type(self, value: str) -> str:
         normalized = value.strip().casefold()
         for canonical, aliases in self._DOC_TYPE_ALIASES.items():
             if normalized in {alias.casefold() for alias in aliases}:
@@ -32,4 +32,5 @@ class TemplateSelector:
         return normalized
 
     def _normalize_audience(self, value: str) -> str:
+        # MVP keeps audience matching intentionally strict: trim + casefold only.
         return value.strip().casefold()

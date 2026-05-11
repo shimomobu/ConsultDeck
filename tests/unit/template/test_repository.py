@@ -1,6 +1,5 @@
 import pytest
 
-from consultdeck.models.requirement_spec import RequirementSpec
 from consultdeck.models.template_spec import TemplateSpec
 from consultdeck.template.repository import (
     TemplateLoadError,
@@ -65,55 +64,10 @@ def test_repository_loads_multiple_templates(tmp_path) -> None:
     ]
 
 
-def test_repository_finds_templates_matching_requirement(tmp_path) -> None:
-    template_dir = tmp_path / "templates"
-    template_dir.mkdir()
-    (template_dir / "proposal_standard.yaml").write_text(PROPOSAL_YAML, encoding="utf-8")
-    (template_dir / "report_standard.yaml").write_text(REPORT_YAML, encoding="utf-8")
-    requirement = RequirementSpec(
-        theme="DX推進",
-        purpose="proposal",
-        audience="経営層",
-        slide_count=5,
-    )
+def test_repository_does_not_expose_matching_behavior(tmp_path) -> None:
+    repository = TemplateRepository(tmp_path / "templates")
 
-    repository = TemplateRepository(template_dir)
-    matches = repository.find_matches(requirement)
-
-    assert [template.template_id for template in matches] == ["proposal_standard"]
-
-
-def test_repository_find_matches_uses_normalized_doc_type_matching(tmp_path) -> None:
-    template_dir = tmp_path / "templates"
-    template_dir.mkdir()
-    (template_dir / "proposal_standard.yaml").write_text(PROPOSAL_YAML, encoding="utf-8")
-    requirement = RequirementSpec(
-        theme="DX推進",
-        purpose="提案書",
-        audience="経営層",
-        slide_count=5,
-    )
-
-    repository = TemplateRepository(template_dir)
-    matches = repository.find_matches(requirement)
-
-    assert [template.template_id for template in matches] == ["proposal_standard"]
-
-
-def test_repository_returns_empty_list_when_no_template_matches(tmp_path) -> None:
-    template_dir = tmp_path / "templates"
-    template_dir.mkdir()
-    (template_dir / "proposal_standard.yaml").write_text(PROPOSAL_YAML, encoding="utf-8")
-    requirement = RequirementSpec(
-        theme="DX推進",
-        purpose="analysis",
-        audience="現場",
-        slide_count=5,
-    )
-
-    repository = TemplateRepository(template_dir)
-
-    assert repository.find_matches(requirement) == []
+    assert not hasattr(repository, "find_matches")
 
 
 def test_repository_raises_for_missing_template_id(tmp_path) -> None:
@@ -127,6 +81,28 @@ def test_repository_detects_invalid_yaml(tmp_path) -> None:
     template_dir = tmp_path / "templates"
     template_dir.mkdir()
     (template_dir / "broken.yaml").write_text("template_id: [", encoding="utf-8")
+
+    repository = TemplateRepository(template_dir)
+
+    with pytest.raises(TemplateLoadError):
+        repository.list()
+
+
+def test_repository_converts_validation_error_to_template_load_error(tmp_path) -> None:
+    template_dir = tmp_path / "templates"
+    template_dir.mkdir()
+    (template_dir / "invalid_spec.yaml").write_text(
+        """
+template_id: invalid
+name: Invalid Template
+doc_type: proposal
+use_case: 提案書
+audience: 経営層
+phase: proposal
+slide_structure: []
+""",
+        encoding="utf-8",
+    )
 
     repository = TemplateRepository(template_dir)
 

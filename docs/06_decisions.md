@@ -41,3 +41,18 @@
 - Phase: 0
 - Decision: LLM推論と画像生成のGPU利用は時間分離し、同時利用を禁止する。
 - Rationale: ローカルGPU環境で推論と画像生成が競合すると性能劣化や失敗につながるため、ファイルロックで排他制御する。
+
+## Decision 007: TemplateRepositoryを純粋なデータアクセス層とする
+
+- Status: Accepted
+- Phase: 2.6
+- Decision: TemplateRepositoryはYAMLテンプレートの読み込み、一覧取得、ID取得に責務を限定し、RequirementSpecやTemplateSelectorに依存しない。
+- Rationale: データアクセスと選択ロジックを分離することで、テンプレート取得の副作用範囲を小さくし、マッチングルールの変更をTemplateSelectorに集約する。
+
+## Decision 008: TemplateSelectorのaudience一致はMVPでは厳密一致とする
+
+- Status: Accepted
+- Phase: 2.6
+- Decision: TemplateSelectorのaudience判定はMVPではtrim + casefoldの完全一致のみとする。
+- Rationale: audienceエイリアス、階層関係、スコアリング、優先順位付けは過剰実装になるため、Phase 2.6ではpurpose/doc_typeの語彙揺れ吸収に限定する。
+- Future: TemplateSpecの`layout_rules`、`style_rules`、`output_targets`はPhase 5前に追加検討する。

@@ -33,6 +33,12 @@ def test_selector_matches_japanese_purpose_to_english_doc_type() -> None:
     assert [template.template_id for template in matches] == ["proposal_standard"]
 
 
+def test_selector_does_not_expose_doc_type_normalizer() -> None:
+    selector = TemplateSelector()
+
+    assert not hasattr(selector, "normalize_doc_type")
+
+
 def test_selector_matches_english_purpose_to_japanese_doc_type() -> None:
     selector = TemplateSelector()
     templates = [_template("report_standard", "報告書")]
