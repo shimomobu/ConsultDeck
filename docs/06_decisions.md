@@ -121,3 +121,10 @@
 - Phase: 5.5
 - Decision: BuiltinPptxRendererは同じoutput_dirとdeck_idで再実行された場合、既存の`.pptx`を上書きする。
 - Rationale: MVPではファイル世代管理をRendererに持たせず、呼び出し側がdeck_idまたはoutput_dirで成果物を管理する。
+
+## Decision 018: 残リスクはRisk Registerで一元管理する
+
+- Status: Accepted
+- Phase: 5.5
+- Decision: Phaseごとの残リスク、レビュー指摘、Decision Log上の未対応事項は`docs/07_risks.md`で管理する。
+- Rationale: Phase 6以降の実装で対応漏れを防ぐため、Open / Mitigated / Acceptedの状態を持つリスク台帳として一元管理する。
