@@ -100,3 +100,24 @@
 - Decision: BuiltinPptxRendererはpython-pptxをRenderer層に閉じ込め、SlideSpecとTemplateSpecから編集可能な`.pptx`を生成する。
 - Rationale: Phase 5では見た目の完成度より、Renderer境界、実ファイル生成、スライド数一致、基本layout処理を優先する。
 - Details: 出力ファイル名は`spec.deck_id + ".pptx"`とする。TITLE、CONTENT、TWO_COLUMN、BLANKの最小レイアウトだけを処理する。
+
+## Decision 015: Renderer Protocolを採用する
+
+- Status: Accepted
+- Phase: 5.5
+- Decision: Renderer境界はABCではなくProtocolで表現する。
+- Rationale: BuiltinPptxRendererと将来のMcpRendererを疎結合に保ち、継承よりも構造的部分型で差し替え可能性を表現する。
+
+## Decision 016: deck_idはファイル名stemとして扱う
+
+- Status: Accepted
+- Phase: 5.5
+- Decision: SlideSpec.deck_idには`/`、`\`、`..`などパスに解釈されうる文字列を許可しない。
+- Rationale: Rendererの出力ファイル名が`deck_id + ".pptx"`であるため、deck_id経由のディレクトリトラバーサルやoutput_dir外への書き込みをモデル層で防ぐ。
+
+## Decision 017: 同一deck_idのPPTXは上書きする
+
+- Status: Accepted
+- Phase: 5.5
+- Decision: BuiltinPptxRendererは同じoutput_dirとdeck_idで再実行された場合、既存の`.pptx`を上書きする。
+- Rationale: MVPではファイル世代管理をRendererに持たせず、呼び出し側がdeck_idまたはoutput_dirで成果物を管理する。

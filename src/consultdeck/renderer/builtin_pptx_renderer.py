@@ -27,15 +27,16 @@ class BuiltinPptxRenderer:
 
     def _add_slide(self, presentation: Presentation, slide_spec: Slide) -> None:
         if slide_spec.layout_type is LayoutType.TITLE:
-            self._add_title_slide(presentation, slide_spec)
+            slide = self._add_title_slide(presentation, slide_spec)
         elif slide_spec.layout_type is LayoutType.CONTENT:
-            self._add_content_slide(presentation, slide_spec)
+            slide = self._add_content_slide(presentation, slide_spec)
         elif slide_spec.layout_type is LayoutType.TWO_COLUMN:
-            self._add_two_column_slide(presentation, slide_spec)
+            slide = self._add_two_column_slide(presentation, slide_spec)
         else:
-            presentation.slides.add_slide(presentation.slide_layouts[6])
+            slide = presentation.slides.add_slide(presentation.slide_layouts[6])
+        self._write_notes(slide, slide_spec.notes)
 
-    def _add_title_slide(self, presentation: Presentation, slide_spec: Slide) -> None:
+    def _add_title_slide(self, presentation: Presentation, slide_spec: Slide):
         slide = presentation.slides.add_slide(presentation.slide_layouts[6])
         box = slide.shapes.add_textbox(Inches(1), Inches(2.5), Inches(8), Inches(1.2))
         frame = box.text_frame
@@ -53,17 +54,19 @@ class BuiltinPptxRenderer:
             )
             subtitle.text_frame.text = slide_spec.message
             subtitle.text_frame.paragraphs[0].alignment = PP_ALIGN.CENTER
+        return slide
 
-    def _add_content_slide(self, presentation: Presentation, slide_spec: Slide) -> None:
+    def _add_content_slide(self, presentation: Presentation, slide_spec: Slide):
         slide = presentation.slides.add_slide(presentation.slide_layouts[6])
         self._add_title(slide, slide_spec.title)
         self._add_bullets(slide, slide_spec.bullets, Inches(1), Inches(1.7), Inches(8))
+        return slide
 
     def _add_two_column_slide(
         self,
         presentation: Presentation,
         slide_spec: Slide,
-    ) -> None:
+    ):
         slide = presentation.slides.add_slide(presentation.slide_layouts[6])
         self._add_title(slide, slide_spec.title)
 
@@ -74,6 +77,7 @@ class BuiltinPptxRenderer:
 
         self._add_bullets(slide, left_items, Inches(0.8), Inches(1.7), Inches(4.0))
         self._add_bullets(slide, right_items, Inches(5.0), Inches(1.7), Inches(4.0))
+        return slide
 
     def _add_title(self, slide, title: str) -> None:
         box = slide.shapes.add_textbox(Inches(0.6), Inches(0.4), Inches(8.8), Inches(0.7))
@@ -91,3 +95,7 @@ class BuiltinPptxRenderer:
             paragraph.text = bullet
             paragraph.level = 0
             paragraph.font.size = Pt(18)
+
+    def _write_notes(self, slide, notes: str | None) -> None:
+        if notes:
+            slide.notes_slide.notes_text_frame.text = notes

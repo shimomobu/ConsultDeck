@@ -210,7 +210,7 @@ output/deck.pptx
 **Renderer契約:**
 
 ```python
-class Renderer(ABC):
+class Renderer(Protocol):
     def render(
         self,
         spec: SlideSpec,
@@ -221,6 +221,8 @@ class Renderer(ABC):
 ```
 
 - RendererはSlideSpecを主入力とし、TemplateSpecの最小スタイル情報と出力先ディレクトリを受け取る
+- BuiltinPptxRendererはSlide.notesをPowerPointの発表者ノートへ反映する
+- python-pptx依存は`src/consultdeck/renderer/`配下に限定する
 - RendererはLLM・GPU・UI・テンプレートRepositoryに依存しない
 - RendererはUI・LLM・GPU制御に関与しない
 

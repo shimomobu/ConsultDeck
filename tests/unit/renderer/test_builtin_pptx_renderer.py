@@ -107,6 +107,26 @@ def test_renderer_handles_minimum_layouts(tmp_path) -> None:
     assert text_by_slide[3] == ""
 
 
+def test_renderer_writes_slide_notes_to_speaker_notes(tmp_path) -> None:
+    renderer = BuiltinPptxRenderer()
+
+    output_path = renderer.render(_slide_spec(), _template(), tmp_path)
+
+    presentation = Presentation(output_path)
+    assert presentation.slides[1].notes_slide.notes_text_frame.text == (
+        "課題を簡潔に説明する"
+    )
+
+
+def test_renderer_handles_missing_notes(tmp_path) -> None:
+    renderer = BuiltinPptxRenderer()
+
+    output_path = renderer.render(_slide_spec(), _template(), tmp_path)
+
+    presentation = Presentation(output_path)
+    assert presentation.slides[0].notes_slide.notes_text_frame.text == ""
+
+
 def test_empty_slide_spec_is_rejected_by_model() -> None:
     with pytest.raises(ValueError):
         SlideSpec(
@@ -115,3 +135,40 @@ def test_empty_slide_spec_is_rejected_by_model() -> None:
             template_id="proposal_standard",
             slides=[],
         )
+
+
+@pytest.mark.parametrize(
+    "deck_id",
+    [
+        "../escape",
+        "..",
+        "nested/deck",
+        "nested\\deck",
+    ],
+)
+def test_invalid_deck_id_is_rejected(deck_id: str) -> None:
+    with pytest.raises(ValueError):
+        SlideSpec(
+            deck_id=deck_id,
+            title="DX推進",
+            template_id="proposal_standard",
+            slides=[
+                Slide(
+                    slide_id="slide-001",
+                    title="課題",
+                    message="課題",
+                    bullets=[],
+                    layout_type=LayoutType.CONTENT,
+                )
+            ],
+        )
+
+
+def test_renderer_cannot_write_outside_output_dir_with_deck_id(tmp_path) -> None:
+    renderer = BuiltinPptxRenderer()
+    output_dir = tmp_path / "output"
+
+    output_path = renderer.render(_slide_spec(), _template(), output_dir)
+
+    assert output_path.resolve().parent == output_dir.resolve()
+    assert not (tmp_path / "deck-test.pptx").exists()

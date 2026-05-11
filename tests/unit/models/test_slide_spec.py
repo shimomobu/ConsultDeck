@@ -69,6 +69,33 @@ def test_slide_spec_rejects_empty_slides() -> None:
         )
 
 
+@pytest.mark.parametrize(
+    "deck_id",
+    [
+        "../deck",
+        "..",
+        "nested/deck",
+        "nested\\deck",
+    ],
+)
+def test_slide_spec_rejects_path_like_deck_id(deck_id: str) -> None:
+    with pytest.raises(ValidationError):
+        SlideSpec(
+            deck_id=deck_id,
+            title="DX推進提案",
+            template_id="proposal_standard",
+            slides=[
+                Slide(
+                    slide_id="slide-001",
+                    title="表紙",
+                    message="DX推進提案",
+                    bullets=[],
+                    layout_type=LayoutType.TITLE,
+                )
+            ],
+        )
+
+
 def test_slide_spec_json_roundtrip() -> None:
     spec = _sample_slide_spec()
 
