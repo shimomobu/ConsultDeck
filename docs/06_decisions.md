@@ -56,3 +56,11 @@
 - Decision: TemplateSelectorのaudience判定はMVPではtrim + casefoldの完全一致のみとする。
 - Rationale: audienceエイリアス、階層関係、スコアリング、優先順位付けは過剰実装になるため、Phase 2.6ではpurpose/doc_typeの語彙揺れ吸収に限定する。
 - Future: TemplateSpecの`layout_rules`、`style_rules`、`output_targets`はPhase 5前に追加検討する。
+
+## Decision 009: OutlineBuilderはテンプレート構成を決定的に展開する
+
+- Status: Accepted
+- Phase: 3
+- Decision: OutlineBuilderはLLMを使わず、TemplateSpec.slide_structureをRequirementSpec.slide_countに合わせて決定的に展開する。
+- Rationale: MVPでは安定したテスト可能性を優先し、章立て生成をテンプレート起点の純粋変換に限定する。
+- Details: slide_countがslide_structureより多い場合は構成を先頭から繰り返す。slide_countが少ない場合は指定枚数で切り詰める。slide_idは`slide-001`からの安定連番とする。

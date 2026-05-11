@@ -10,6 +10,13 @@ class Section(BaseModel):
     slide_titles: list[NonBlankString] = Field(default_factory=list)
 
 
+class OutlineItem(BaseModel):
+    slide_id: NonBlankString
+    title: NonBlankString
+    role: NonBlankString
+
+
 class OutlineSpec(BaseModel):
     title: NonBlankString
+    slides: list[OutlineItem] = Field(default_factory=list)
     sections: list[Section] = Field(default_factory=list)

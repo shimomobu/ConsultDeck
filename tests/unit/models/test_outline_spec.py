@@ -1,17 +1,19 @@
-from consultdeck.models.outline_spec import OutlineSpec, Section
+from consultdeck.models.outline_spec import OutlineItem, OutlineSpec
 
 
-def test_outline_spec_accepts_sections() -> None:
+def test_outline_spec_accepts_slide_items() -> None:
     spec = OutlineSpec(
         title="DX推進提案",
-        sections=[
-            Section(
-                section_title="課題",
-                slide_titles=["現状課題", "影響"],
+        slides=[
+            OutlineItem(
+                slide_id="slide-001",
+                title="課題",
+                role="課題",
             )
         ],
     )
 
     assert spec.title == "DX推進提案"
-    assert spec.sections[0].section_title == "課題"
-    assert spec.sections[0].slide_titles == ["現状課題", "影響"]
+    assert spec.slides[0].slide_id == "slide-001"
+    assert spec.slides[0].title == "課題"
+    assert spec.slides[0].role == "課題"
