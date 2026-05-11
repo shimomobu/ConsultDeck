@@ -83,6 +83,23 @@ def test_repository_finds_templates_matching_requirement(tmp_path) -> None:
     assert [template.template_id for template in matches] == ["proposal_standard"]
 
 
+def test_repository_find_matches_uses_normalized_doc_type_matching(tmp_path) -> None:
+    template_dir = tmp_path / "templates"
+    template_dir.mkdir()
+    (template_dir / "proposal_standard.yaml").write_text(PROPOSAL_YAML, encoding="utf-8")
+    requirement = RequirementSpec(
+        theme="DX推進",
+        purpose="提案書",
+        audience="経営層",
+        slide_count=5,
+    )
+
+    repository = TemplateRepository(template_dir)
+    matches = repository.find_matches(requirement)
+
+    assert [template.template_id for template in matches] == ["proposal_standard"]
+
+
 def test_repository_returns_empty_list_when_no_template_matches(tmp_path) -> None:
     template_dir = tmp_path / "templates"
     template_dir.mkdir()

@@ -1,13 +1,13 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any
 
 import yaml
 from pydantic import ValidationError
 
 from consultdeck.models.requirement_spec import RequirementSpec
 from consultdeck.models.template_spec import TemplateSpec
+from consultdeck.template.selector import TemplateSelector
 
 
 class TemplateNotFoundError(LookupError):
@@ -19,8 +19,13 @@ class TemplateLoadError(ValueError):
 
 
 class TemplateRepository:
-    def __init__(self, template_dir: str | Path) -> None:
+    def __init__(
+        self,
+        template_dir: str | Path,
+        selector: TemplateSelector | None = None,
+    ) -> None:
         self.template_dir = Path(template_dir)
+        self.selector = selector or TemplateSelector()
 
     def get(self, template_id: str) -> TemplateSpec:
         for template in self.list():
@@ -38,11 +43,7 @@ class TemplateRepository:
         return templates
 
     def find_matches(self, requirement: RequirementSpec) -> list[TemplateSpec]:
-        return [
-            template
-            for template in self.list()
-            if self._matches_requirement(template, requirement)
-        ]
+        return self.selector.find_matches(requirement, self.list())
 
     def _load_file(self, path: Path) -> TemplateSpec:
         try:
@@ -57,16 +58,3 @@ class TemplateRepository:
             return TemplateSpec.model_validate(raw)
         except ValidationError as exc:
             raise TemplateLoadError(f"Invalid template spec: {path}") from exc
-
-    def _matches_requirement(
-        self,
-        template: TemplateSpec,
-        requirement: RequirementSpec,
-    ) -> bool:
-        return (
-            self._normalize(template.doc_type) == self._normalize(requirement.purpose)
-            and self._normalize(template.audience) == self._normalize(requirement.audience)
-        )
-
-    def _normalize(self, value: Any) -> str:
-        return str(value).strip().casefold()

@@ -5,9 +5,11 @@ from consultdeck.template.repository import (
     TemplateNotFoundError,
     TemplateRepository,
 )
+from consultdeck.template.selector import TemplateSelector
 
 __all__ = [
     "TemplateLoadError",
     "TemplateNotFoundError",
     "TemplateRepository",
+    "TemplateSelector",
 ]
