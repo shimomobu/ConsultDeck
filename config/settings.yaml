@@ -1,0 +1,17 @@
+llm:
+  provider: ollama
+  base_url: http://localhost:11434
+  model: gemma
+  timeout_seconds: 120
+
+renderer:
+  type: builtin
+  output_dir: output
+  mcp:
+    enabled: false
+    endpoint: null
+    auth_env: CONSULTDECK_MCP_TOKEN
+
+gpu:
+  lock_file: /tmp/consultdeck-gpu.lock
+  timeout_seconds: 300
