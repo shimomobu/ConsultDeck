@@ -1,0 +1,10 @@
+template_id: analysis_standard
+name: Analysis Standard
+doc_type: analysis
+use_case: 分析資料
+audience: 部長層
+phase: analysis
+slide_structure:
+  - 事実
+  - 分析
+  - 示唆

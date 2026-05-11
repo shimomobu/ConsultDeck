@@ -1,0 +1,10 @@
+template_id: proposal_standard
+name: Proposal Standard
+doc_type: proposal
+use_case: 提案書
+audience: 経営層
+phase: proposal
+slide_structure:
+  - 課題
+  - 解決策
+  - 効果

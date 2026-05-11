@@ -1,0 +1,10 @@
+template_id: report_standard
+name: Report Standard
+doc_type: report
+use_case: 報告書
+audience: 部長層
+phase: reporting
+slide_structure:
+  - 状況
+  - 課題
+  - 対応
