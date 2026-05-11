@@ -128,3 +128,10 @@
 - Phase: 5.5
 - Decision: Phaseごとの残リスク、レビュー指摘、Decision Log上の未対応事項は`docs/07_risks.md`で管理する。
 - Rationale: Phase 6以降の実装で対応漏れを防ぐため、Open / Mitigated / Acceptedの状態を持つリスク台帳として一元管理する。
+
+## Decision 019: CLIはPipelineの薄い入口にする
+
+- Status: Accepted
+- Phase: 6
+- Decision: `python -m consultdeck`はCLI引数をRequirementSpecへ変換し、Pipelineへ委譲してPPTXのPathを表示する。
+- Rationale: CLI、Pipeline、Rendererの責務を分け、GPU、Stable Diffusion、MCP、LLM本文生成を使わない細いend-to-end経路を先に固定する。

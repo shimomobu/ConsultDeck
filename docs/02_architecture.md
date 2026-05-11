@@ -296,8 +296,8 @@ consultdeck/
 │       ├── slide/
 │       │   └── builder.py            # SlideBuilder
 │       ├── pipeline/
-│       │   ├── input_parser.py       # InputParser
-│       │   └── reviewer.py           # Reviewer
+│       │   ├── pipeline.py           # Pipeline orchestration
+│       │   └── reviewer.py           # Reviewer（将来）
 │       ├── template/
 │       │   ├── repository.py         # TemplateRepository
 │       │   └── selector.py           # TemplateSelector
@@ -313,7 +313,7 @@ consultdeck/
 │       │   └── generator.py          # ImageGenerator
 │       ├── gpu/
 │       │   └── scheduler.py          # GpuScheduler
-│       └── cli.py                    # CLIエントリポイント
+│       └── __main__.py               # python -m consultdeck CLI
 ├── tests/
 │   ├── unit/
 │   └── integration/
