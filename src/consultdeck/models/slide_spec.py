@@ -28,7 +28,7 @@ class Slide(BaseModel):
     slide_id: NonBlankString
     title: NonBlankString
     message: NonBlankString
-    bullets: list[str] = Field(min_length=1)
+    bullets: list[str] = Field(default_factory=list)
     diagram: DiagramSpec | None = None
     image: ImageSpec | None = None
     notes: str | None = None
@@ -39,4 +39,4 @@ class SlideSpec(BaseModel):
     deck_id: NonBlankString
     title: NonBlankString
     template_id: NonBlankString
-    slides: list[Slide] = Field(default_factory=list)
+    slides: list[Slide] = Field(min_length=1)

@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, Any
 
 from pydantic import BaseModel, Field, StringConstraints
 
@@ -13,3 +13,6 @@ class TemplateSpec(BaseModel):
     audience: NonBlankString
     phase: NonBlankString
     slide_structure: list[NonBlankString] = Field(min_length=1)
+    layout_rules: dict[str, Any]
+    style_rules: dict[str, Any]
+    output_targets: list[NonBlankString] = Field(min_length=1)

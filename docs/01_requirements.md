@@ -67,12 +67,12 @@ SlideSpec
   deck_id: str
   title: str
   template_id: str
-  slides: list[Slide]
+  slides: list[Slide]  # 1件以上
     Slide
       slide_id: str
       title: str
       message: str
-      bullets: list[str]
+      bullets: list[str]  # TITLE / BLANKでは空配列可
       diagram: DiagramSpec | None
       image: ImageSpec | None
       notes: str | None
@@ -100,6 +100,9 @@ Renderer以外のモジュールはSlideSpecを直接PPTXへ変換しない。
 | layout_rules    | レイアウト規則   |
 | style_rules     | 配色・余白・文体等 |
 | output_targets  | pptx等     |
+
+MVPでは`layout_rules`、`style_rules`はdict、`output_targets`はlistとして扱う。  
+高度なレイアウト決定はPhase 5以降でRenderer側の責務と合わせて整理する。
 
 ### 初期提供テンプレート（MVP対象）
 

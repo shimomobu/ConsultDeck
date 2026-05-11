@@ -21,6 +21,9 @@ def _template(template_id: str, doc_type: str, audience: str = "経営層") -> T
         audience=audience,
         phase=doc_type,
         slide_structure=["導入", "本論"],
+        layout_rules={},
+        style_rules={},
+        output_targets=["pptx"],
     )
 
 

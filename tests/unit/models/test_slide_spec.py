@@ -47,14 +47,25 @@ def test_slide_spec_rejects_unknown_layout_type() -> None:
         )
 
 
-def test_slide_rejects_empty_bullets() -> None:
+def test_slide_allows_empty_bullets() -> None:
+    slide = Slide(
+        slide_id="slide-001",
+        title="表紙",
+        message="DX推進提案",
+        bullets=[],
+        layout_type=LayoutType.TITLE,
+    )
+
+    assert slide.bullets == []
+
+
+def test_slide_spec_rejects_empty_slides() -> None:
     with pytest.raises(ValidationError):
-        Slide(
-            slide_id="slide-001",
-            title="現状課題",
-            message="属人化により意思決定が遅延している",
-            bullets=[],
-            layout_type=LayoutType.CONTENT,
+        SlideSpec(
+            deck_id="deck-001",
+            title="DX推進提案",
+            template_id="proposal_standard",
+            slides=[],
         )
 
 

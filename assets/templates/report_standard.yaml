@@ -8,3 +8,16 @@ slide_structure:
   - 状況
   - 課題
   - 対応
+layout_rules:
+  default: content
+  title_roles:
+    - 表紙
+    - タイトル
+  two_column_roles:
+    - 比較
+    - 対比
+style_rules:
+  font: Arial
+  tone: formal
+output_targets:
+  - pptx

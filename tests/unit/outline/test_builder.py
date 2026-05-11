@@ -23,6 +23,9 @@ def _template(slide_structure: list[str]) -> TemplateSpec:
         audience="経営層",
         phase="proposal",
         slide_structure=slide_structure,
+        layout_rules={},
+        style_rules={},
+        output_targets=["pptx"],
     )
 
 

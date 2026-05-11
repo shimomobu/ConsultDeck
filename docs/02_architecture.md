@@ -284,10 +284,12 @@ consultdeck/
 │       │   ├── outline_spec.py       # OutlineSpec
 │       │   ├── slide_spec.py         # SlideSpec（中核）
 │       │   └── template_spec.py      # TemplateSpec
+│       ├── outline/
+│       │   └── builder.py            # OutlineBuilder
+│       ├── slide/
+│       │   └── builder.py            # SlideBuilder
 │       ├── pipeline/
 │       │   ├── input_parser.py       # InputParser
-│       │   ├── outline_generator.py  # OutlineGenerator
-│       │   ├── slide_generator.py    # SlideGenerator
 │       │   └── reviewer.py           # Reviewer
 │       ├── template/
 │       │   ├── repository.py         # TemplateRepository

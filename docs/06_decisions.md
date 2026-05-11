@@ -55,7 +55,6 @@
 - Phase: 2.6
 - Decision: TemplateSelectorのaudience判定はMVPではtrim + casefoldの完全一致のみとする。
 - Rationale: audienceエイリアス、階層関係、スコアリング、優先順位付けは過剰実装になるため、Phase 2.6ではpurpose/doc_typeの語彙揺れ吸収に限定する。
-- Future: TemplateSpecの`layout_rules`、`style_rules`、`output_targets`はPhase 5前に追加検討する。
 
 ## Decision 009: OutlineBuilderはテンプレート構成を決定的に展開する
 
@@ -79,3 +78,17 @@
 - Decision: SlideBuilderはRequirementSpec、OutlineSpec、TemplateSpecからRenderer入力契約であるSlideSpecを生成し、LLM本文生成はまだ行わない。
 - Rationale: Renderer境界に渡す構造を先に固定し、後続のLLM生成やレビュー処理をSlideSpec契約に合わせて追加できる状態にする。
 - Details: slide_idとtitleはOutlineItem由来とする。message、bullets、notesは決定論的な仮文を生成する。layout_typeはMVPではroleの簡易ルールで決定し、未該当はcontentとする。
+
+## Decision 012: Renderer前のSlideSpec契約を緩めすぎず固定する
+
+- Status: Accepted
+- Phase: 4.5
+- Decision: SlideSpec.slidesは1件以上を必須とし、Slide.bulletsは空配列を許容する。SlideBuilderはCONTENT/TWO_COLUMNではbulletsを生成し、TITLE/BLANKではbulletsなしを許容する。
+- Rationale: 表紙や空白レイアウトではbulletsが不要な一方、空デッキはRenderer入力として意味を持たないため、制約をSlideSpecとBuilderの責務に分ける。
+
+## Decision 013: deck_idは呼び出し側指定と自動生成を両立する
+
+- Status: Accepted
+- Phase: 4.5
+- Decision: SlideBuilder.build()は任意のdeck_idを受け取り、未指定時はUUID由来の衝突しにくいIDを生成する。
+- Rationale: テストや再現性が必要な経路では固定IDを使い、通常生成ではテンプレートID由来の固定ID衝突を避ける。

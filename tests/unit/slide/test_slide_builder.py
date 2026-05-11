@@ -38,18 +38,33 @@ def _template() -> TemplateSpec:
         audience="経営層",
         phase="proposal",
         slide_structure=["課題", "解決策", "効果"],
+        layout_rules={},
+        style_rules={},
+        output_targets=["pptx"],
     )
 
 
 def test_builder_creates_slide_spec_from_outline() -> None:
     builder = SlideBuilder()
 
-    spec = builder.build(_requirement(), _outline(), _template())
+    spec = builder.build(_requirement(), _outline(), _template(), deck_id="deck-test")
 
     assert isinstance(spec, SlideSpec)
+    assert spec.deck_id == "deck-test"
     assert spec.title == "DX推進"
     assert spec.template_id == "proposal_standard"
     assert len(spec.slides) == 3
+
+
+def test_builder_generates_unique_deck_id_when_not_provided() -> None:
+    builder = SlideBuilder()
+
+    first = builder.build(_requirement(), _outline(), _template())
+    second = builder.build(_requirement(), _outline(), _template())
+
+    assert first.deck_id.startswith("deck-")
+    assert second.deck_id.startswith("deck-")
+    assert first.deck_id != second.deck_id
 
 
 def test_builder_inherits_slide_id_and_title_from_outline_items() -> None:
@@ -78,12 +93,28 @@ def test_builder_keeps_slide_count_equal_to_outline_items() -> None:
     assert len(spec.slides) == 2
 
 
-def test_builder_never_generates_empty_bullets() -> None:
+def test_builder_generates_bullets_for_content_and_two_column_layouts() -> None:
     builder = SlideBuilder()
+    outline = _outline(
+        [
+            OutlineItem(slide_id="slide-001", title="比較", role="比較"),
+            OutlineItem(slide_id="slide-002", title="課題", role="課題"),
+        ]
+    )
 
-    spec = builder.build(_requirement(), _outline(), _template())
+    spec = builder.build(_requirement(), outline, _template())
 
     assert all(slide.bullets for slide in spec.slides)
+
+
+def test_builder_allows_title_layout_without_bullets() -> None:
+    builder = SlideBuilder()
+    outline = _outline([OutlineItem(slide_id="slide-001", title="表紙", role="表紙")])
+
+    spec = builder.build(_requirement(), outline, _template())
+
+    assert spec.slides[0].layout_type is LayoutType.TITLE
+    assert spec.slides[0].bullets == []
 
 
 def test_builder_sets_layout_type_from_role() -> None:

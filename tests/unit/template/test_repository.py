@@ -19,6 +19,12 @@ slide_structure:
   - 課題
   - 解決策
   - 効果
+layout_rules:
+  default: content
+style_rules:
+  font: Arial
+output_targets:
+  - pptx
 """
 
 
@@ -33,6 +39,12 @@ slide_structure:
   - 状況
   - 課題
   - 対応
+layout_rules:
+  default: content
+style_rules:
+  font: Arial
+output_targets:
+  - pptx
 """
 
 
@@ -100,6 +112,10 @@ use_case: 提案書
 audience: 経営層
 phase: proposal
 slide_structure: []
+layout_rules: {}
+style_rules: {}
+output_targets:
+  - pptx
 """,
         encoding="utf-8",
     )
