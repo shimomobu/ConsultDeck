@@ -1,0 +1,71 @@
+# AGENTS.md
+
+## Project
+
+ConsultDeck is a local system for semi-automated consulting deck generation.
+
+The final output is Microsoft PowerPoint `.pptx`.
+The core architecture is:
+
+User Input → RequirementSpec → OutlineSpec → SlideSpec → Renderer → PPTX
+
+## Core Principles
+
+- TDD is mandatory.
+- Do not implement without a failing test first.
+- Keep MVP scope small.
+- Avoid over-engineering.
+- SlideSpec is the central contract.
+- Renderer must be replaceable.
+- PPTX generation must be isolated behind Renderer boundary.
+- Stable Diffusion is only for supplemental images.
+- GPU workloads must not run concurrently.
+
+## Architecture Rules
+
+- Non-renderer modules must not depend on PPTX libraries.
+- SlideSpec must not import renderer modules.
+- Renderer interface must remain narrow.
+- MCP integration must be isolated behind McpRenderer / McpClient / McpAdapter.
+- Template management must not be hardcoded into Renderer.
+- Configuration must support both file-based settings and future UI-based settings.
+
+## TDD Rules
+
+For each task:
+
+1. Write or update tests first.
+2. Confirm RED.
+3. Implement the minimum code.
+4. Confirm GREEN.
+5. Refactor only if needed.
+6. Run the relevant test suite.
+7. Report test results.
+
+## Git Rules
+
+- Commit after each coherent phase.
+- Do not leave completed work uncommitted.
+- Use concise commit messages.
+- Do not mix unrelated changes.
+
+## Review Checklist
+
+Before reporting completion, check:
+
+- Does this follow the RFP?
+- Does this preserve SlideSpec as the central contract?
+- Is the Renderer boundary preserved?
+- Is this still MVP-sized?
+- Are tests meaningful?
+- Are docs updated if behavior or architecture changed?
+
+## Reporting Format
+
+Report in Japanese with:
+
+- Changed files
+- Test results
+- Design decisions
+- Remaining risks
+- Commit status
