@@ -61,6 +61,13 @@
 
 - Status: Accepted
 - Phase: 3
-- Decision: OutlineBuilderはLLMを使わず、TemplateSpec.slide_structureをRequirementSpec.slide_countに合わせて決定的に展開する。
+- Decision: OutlineBuilderはLLMを使わず、TemplateSpec.slide_structureをRequirementSpec.slide_countに合わせて決定的に展開し、OutlineSpec.slidesのみを生成する。
 - Rationale: MVPでは安定したテスト可能性を優先し、章立て生成をテンプレート起点の純粋変換に限定する。
 - Details: slide_countがslide_structureより多い場合は構成を先頭から繰り返す。slide_countが少ない場合は指定枚数で切り詰める。slide_idは`slide-001`からの安定連番とする。
+
+## Decision 010: OutlineSpecの正式構造をslidesへ一本化する
+
+- Status: Accepted
+- Phase: 3.5
+- Decision: OutlineSpecの正式構造は`slides: list[OutlineItem]`のみとし、旧`sections`構造は廃止する。
+- Rationale: 後続のSlideSpec生成で入力構造が二重化すると責務と変換ルールが曖昧になるため、外部利用者がいない現段階でbreaking changeとして整理する。

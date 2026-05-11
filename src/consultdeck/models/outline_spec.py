@@ -1,13 +1,8 @@
 from typing import Annotated
 
-from pydantic import BaseModel, Field, StringConstraints
+from pydantic import BaseModel, ConfigDict, Field, StringConstraints
 
 NonBlankString = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
-
-
-class Section(BaseModel):
-    section_title: NonBlankString
-    slide_titles: list[NonBlankString] = Field(default_factory=list)
 
 
 class OutlineItem(BaseModel):
@@ -17,6 +12,7 @@ class OutlineItem(BaseModel):
 
 
 class OutlineSpec(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     title: NonBlankString
     slides: list[OutlineItem] = Field(default_factory=list)
-    sections: list[Section] = Field(default_factory=list)

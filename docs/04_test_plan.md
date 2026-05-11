@@ -29,7 +29,7 @@
 | テスト対象          | テスト内容                             | ファイル                                         |
 | -------------- | --------------------------------- | -------------------------------------------- |
 | RequirementSpec | slide_count最小値、theme空文字、toneデフォルト値 | `tests/unit/models/test_requirement_spec.py` |
-| OutlineSpec    | Section構造、スライドタイトルリスト              | `tests/unit/models/test_outline_spec.py`     |
+| OutlineSpec    | slides構造、slide_id/title/role、旧sections拒否 | `tests/unit/models/test_outline_spec.py`     |
 | SlideSpec      | layout_type enum、JSON往復、YAML往復     | `tests/unit/models/test_slide_spec.py`       |
 | TemplateSpec   | 必須フィールド、layout_rules構造            | `tests/unit/models/test_template_spec.py`    |
 

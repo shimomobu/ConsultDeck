@@ -49,10 +49,11 @@ RequirementSpecを基にLLMが生成するスライド構成案。
 ```
 OutlineSpec
   title: str
-  sections: list[Section]
-    Section
-      section_title: str
-      slide_titles: list[str]
+  slides: list[OutlineItem]
+    OutlineItem
+      slide_id: str
+      title: str
+      role: str
 ```
 
 ---
