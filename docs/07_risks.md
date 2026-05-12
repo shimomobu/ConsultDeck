@@ -30,3 +30,4 @@
 | R-018 | dependency boundary testがCWDに依存する | 別CWDからpytestを実行した際に検出漏れが起きる | Medium | Phase 5.5でテストファイル位置からproject rootを解決する方式へ修正 | Phase 5.5 | Mitigated |
 | R-019 | CLI実行がPYTHONPATHに依存する | editable install後でも利用者が環境変数を設定しないとCLIを実行できない | High | Phase 6.5でconsole scriptとpackaging設定を追加し、`consultdeck`コマンドを提供 | Phase 6.5 | Mitigated |
 | R-020 | 非editable配布時の標準テンプレート同梱未検証 | wheel等で`assets/templates`が同梱されない場合、`--templates`未指定のCLI実行が失敗する可能性がある | Medium | MVPではeditable install前提を維持。配布形式を固める段階でpackage data化とインストール後CLIテストを追加する | Post-MVP | Open |
+| R-021 | wheelビルドに`assets/templates`が未同梱 | `pyproject.toml`のwheel設定が`packages = ["src/consultdeck"]`のみのため、non-editable install後にCLIのデフォルトテンプレート参照が壊れる可能性が高い | Medium | R-020の具体化リスク。editable install前提のMVPではタグ阻害にしない。Phase 6でpackage-data、hatch artifacts、`importlib.resources`などを検討する | Phase 6 | Open |

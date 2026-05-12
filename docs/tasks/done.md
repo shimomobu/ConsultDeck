@@ -11,3 +11,7 @@
 ## M-003
 
 - [x] TASK-010: M-003 Pipeline renderer type hint decoupling
+
+## MVP tag follow-up
+
+- [x] TASK-012: Register R-021 for wheel build missing assets/templates risk
