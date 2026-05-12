@@ -16,3 +16,6 @@
 
 - [x] TASK-012: Register R-021 for wheel build missing assets/templates risk
 - [x] TASK-013: Improve CLI coverage for src/consultdeck/__main__.py
+- [x] TASK-014: Plan Phase 6 LLM body generation
+- [x] TASK-015: Plan Phase 6 layout_rules implementation
+- [x] TASK-016: Plan Phase 6 template evolution
