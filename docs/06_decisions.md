@@ -151,3 +151,11 @@
 - Decision: `--templates`未指定時は、実行時CWDではなくプロジェクト同梱の`assets/templates`を参照する。
 - Rationale: console scriptをプロジェクトルート以外から実行しても、MVPの標準テンプレートを安定して読み込めるようにする。
 - Details: 明示的な`--templates <path>`が指定された場合は、そのパスを優先する。
+
+## Decision 022: LLM本文生成はProvider境界とfallbackで導入する
+
+- Status: Accepted
+- Phase: 6
+- Decision: LLM本文生成は`LlmProvider` Protocolから`LlmGenerationResult`を受け取り、SlideBuilderがSlideSpecへ反映する。Provider未指定または失敗時はdeterministic contentへfallbackする。
+- Rationale: SlideSpecを中心契約として維持し、RendererへLLM概念を持ち込まず、将来のOllama等のProvider差し替えを小さな境界で可能にする。
+- Details: 初期実装ではOllama接続、multi-provider化、CLIオプション追加は行わない。

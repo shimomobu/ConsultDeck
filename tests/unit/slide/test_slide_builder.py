@@ -4,6 +4,11 @@ from consultdeck.models.outline_spec import OutlineItem, OutlineSpec
 from consultdeck.models.requirement_spec import RequirementSpec
 from consultdeck.models.slide_spec import LayoutType, SlideSpec
 from consultdeck.models.template_spec import TemplateSpec
+from consultdeck.slide.content_generator import (
+    FakeLlmProvider,
+    GeneratedSlideContent,
+    LlmGenerationResult,
+)
 from consultdeck.slide.builder import SlideBuildError, SlideBuilder
 
 
@@ -136,6 +141,59 @@ def test_builder_sets_layout_type_from_role() -> None:
     ]
 
 
+def test_builder_uses_llm_provider_content_when_available() -> None:
+    provider = FakeLlmProvider(
+        LlmGenerationResult(
+            slides=[
+                GeneratedSlideContent(
+                    slide_id="slide-001",
+                    message="LLMが生成した課題メッセージ",
+                    bullets=["LLM課題1", "LLM課題2"],
+                    notes="LLM speaker notes",
+                )
+            ]
+        )
+    )
+    builder = SlideBuilder(llm_provider=provider)
+
+    spec = builder.build(_requirement(), _outline(), _template())
+
+    assert spec.slides[0].message == "LLMが生成した課題メッセージ"
+    assert spec.slides[0].bullets == ["LLM課題1", "LLM課題2"]
+    assert spec.slides[0].notes == "LLM speaker notes"
+    assert spec.slides[1].message == "DX推進における解決策を整理します。"
+
+
+def test_builder_falls_back_to_deterministic_content_when_provider_fails() -> None:
+    builder = SlideBuilder(llm_provider=FailingProvider())
+
+    spec = builder.build(_requirement(), _outline(), _template())
+
+    assert spec.slides[0].message == "DX推進における課題を整理します。"
+    assert spec.slides[0].bullets == ["課題の要点を確認する"]
+    assert spec.slides[0].notes == "Audience: 経営層"
+
+
+def test_builder_falls_back_when_provider_content_is_invalid() -> None:
+    provider = FakeLlmProvider(
+        LlmGenerationResult(
+            slides=[
+                GeneratedSlideContent(
+                    slide_id="slide-001",
+                    message="",
+                    bullets=["LLM課題1"],
+                )
+            ]
+        )
+    )
+    builder = SlideBuilder(llm_provider=provider)
+
+    spec = builder.build(_requirement(), _outline(), _template())
+
+    assert spec.slides[0].message == "DX推進における課題を整理します。"
+    assert spec.slides[0].bullets == ["課題の要点を確認する"]
+
+
 def test_builder_output_is_renderer_independent() -> None:
     builder = SlideBuilder()
 
@@ -150,3 +208,8 @@ def test_builder_raises_when_outline_has_no_slides() -> None:
 
     with pytest.raises(SlideBuildError):
         builder.build(_requirement(), _outline([]), _template())
+
+
+class FailingProvider:
+    def generate_slide_content(self, request):
+        raise RuntimeError("provider failed")

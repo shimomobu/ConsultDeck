@@ -18,7 +18,7 @@
 | R-006 | deck_idのWindows予約名・長すぎる名前未制御 | Windows環境で保存失敗、またはファイルシステム制限に触れる可能性がある | Medium | Phase 6以降で予約名・長さ制限を追加する | Phase 6以降 | Open |
 | R-007 | 同一deck_idで上書きされる | 過去の出力ファイルを失う可能性がある | Medium | MVPではDecision 017として許容。呼び出し側がdeck_id/output_dirを管理する | MVP | Accepted |
 | R-008 | PPTX見た目品質が最小限 | 実業務でそのまま使える品質には届かない | High | Phase 6以降でstyle_rules/layout_rules反映とレイアウト改善を追加 | Phase 6以降 | Open |
-| R-009 | LLM本文生成未実装 | SlideSpecのmessage/bulletsが仮文のままで、資料内容の品質が低い | High | Phase 6以降でLLM生成をSlideSpec契約へ接続する | Phase 6以降 | Open |
+| R-009 | 実LLM Provider未接続 | Provider境界、Fake Provider、fallbackはあるが、Ollama等の実Providerが未接続のため通常生成では仮文のまま | High | Phase 6でFake ProviderによるTDDを維持しつつ、次段階でOllama Providerとprompt/parserを追加する | Phase 6以降 | Open |
 | R-010 | MCP Renderer未実装 | 外部PPT生成サービスへ委譲できない | Medium | MVP後半またはPost-MVPでMcpAdapter/McpRendererを追加 | Post-MVP | Open |
 | R-011 | Stable Diffusion画像差し込み未実装 | 表紙や概念画像をPPTXに埋め込めない | Low | MVPでは補助機能扱い。Renderer安定後に必要範囲だけ実装 | Post-MVP | Accepted |
 | R-012 | GitHub未pushによるバックアップ未整備 | ローカル障害時に作業履歴を失う可能性がある | High | remote設定後にpush運用を開始する | Phase 6前後 | Open |
@@ -32,4 +32,4 @@
 | R-020 | 非editable配布時の標準テンプレート同梱未検証 | wheel等で`assets/templates`が同梱されない場合、`--templates`未指定のCLI実行が失敗する可能性がある | Medium | MVPではeditable install前提を維持。配布形式を固める段階でpackage data化とインストール後CLIテストを追加する | Post-MVP | Open |
 | R-021 | wheelビルドに`assets/templates`が未同梱 | `pyproject.toml`のwheel設定が`packages = ["src/consultdeck"]`のみのため、non-editable install後にCLIのデフォルトテンプレート参照が壊れる可能性が高い | Medium | R-020の具体化リスク。editable install前提のMVPではタグ阻害にしない。Phase 6でpackage-data、hatch artifacts、`importlib.resources`などを検討する | Phase 6 | Open |
 | R-022 | optional dependencyの境界未整理 | LLM、画像生成、MCP連携を同時に必須依存へ入れると、軽量CLI利用や環境構築が不安定になる | Medium | Phase 6でcoreとoptional groupsを分け、base installでCLIとBuiltinPptxRendererが動く状態を維持する | Phase 6 | Open |
-| R-023 | LLM Provider失敗時にdeck生成が不安定化する | タイムアウト、接続失敗、形式不正、部分出力によりSlideSpec生成が失敗し、CLI全体が使えなくなる可能性がある | High | Provider境界で失敗を閉じ込め、Fake Providerで成功・失敗・部分不正をTDDし、deterministic fallbackを必須にする | Phase 6 | Open |
+| R-023 | LLM Provider失敗時にdeck生成が不安定化する | タイムアウト、接続失敗、形式不正、部分出力によりSlideSpec生成が失敗し、CLI全体が使えなくなる可能性がある | High | Provider境界で例外と不正コンテンツを閉じ込め、Fake Providerで成功・失敗・部分不正をTDDし、deterministic fallbackを必須にする | Phase 6 | Mitigated |

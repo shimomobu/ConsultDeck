@@ -226,7 +226,7 @@ Decision impact:
 
 - Existing Decision 002 remains valid: SlideSpec is the central contract.
 - Existing Decision 003 and 015 remain valid: Renderer receives SlideSpec only.
-- A new durable Decision is not needed until the first implementation chooses concrete class/module names.
+- Decision 022 records the initial implementation choice: LLM content enters through a provider boundary, SlideBuilder reflects it into SlideSpec, and deterministic fallback remains mandatory.
 
 ## Boundary Against Over-Engineering
 

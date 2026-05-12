@@ -20,3 +20,4 @@
 - [x] TASK-015: Plan Phase 6 layout_rules implementation
 - [x] TASK-016: Plan Phase 6 template evolution
 - [x] TASK-020: Design minimal LLM body generation boundary
+- [x] TASK-021: Implement minimal LLM body generation with fake provider fallback
