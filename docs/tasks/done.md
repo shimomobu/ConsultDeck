@@ -19,3 +19,4 @@
 - [x] TASK-014: Plan Phase 6 LLM body generation
 - [x] TASK-015: Plan Phase 6 layout_rules implementation
 - [x] TASK-016: Plan Phase 6 template evolution
+- [x] TASK-020: Design minimal LLM body generation boundary

@@ -32,3 +32,4 @@
 | R-020 | 非editable配布時の標準テンプレート同梱未検証 | wheel等で`assets/templates`が同梱されない場合、`--templates`未指定のCLI実行が失敗する可能性がある | Medium | MVPではeditable install前提を維持。配布形式を固める段階でpackage data化とインストール後CLIテストを追加する | Post-MVP | Open |
 | R-021 | wheelビルドに`assets/templates`が未同梱 | `pyproject.toml`のwheel設定が`packages = ["src/consultdeck"]`のみのため、non-editable install後にCLIのデフォルトテンプレート参照が壊れる可能性が高い | Medium | R-020の具体化リスク。editable install前提のMVPではタグ阻害にしない。Phase 6でpackage-data、hatch artifacts、`importlib.resources`などを検討する | Phase 6 | Open |
 | R-022 | optional dependencyの境界未整理 | LLM、画像生成、MCP連携を同時に必須依存へ入れると、軽量CLI利用や環境構築が不安定になる | Medium | Phase 6でcoreとoptional groupsを分け、base installでCLIとBuiltinPptxRendererが動く状態を維持する | Phase 6 | Open |
+| R-023 | LLM Provider失敗時にdeck生成が不安定化する | タイムアウト、接続失敗、形式不正、部分出力によりSlideSpec生成が失敗し、CLI全体が使えなくなる可能性がある | High | Provider境界で失敗を閉じ込め、Fake Providerで成功・失敗・部分不正をTDDし、deterministic fallbackを必須にする | Phase 6 | Open |
