@@ -15,3 +15,4 @@
 ## MVP tag follow-up
 
 - [x] TASK-012: Register R-021 for wheel build missing assets/templates risk
+- [x] TASK-013: Improve CLI coverage for src/consultdeck/__main__.py

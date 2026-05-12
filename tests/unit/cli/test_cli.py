@@ -3,7 +3,10 @@ import subprocess
 import sys
 from pathlib import Path
 
+import pytest
 from pptx import Presentation
+
+from consultdeck.__main__ import main
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
@@ -48,6 +51,14 @@ def test_module_help_uses_module_command_name() -> None:
     assert result.stdout.startswith("usage: python -m consultdeck ")
 
 
+def test_main_help_path_is_covered(capsys) -> None:
+    with pytest.raises(SystemExit) as exc_info:
+        main(["--help"])
+
+    assert exc_info.value.code == 0
+    assert capsys.readouterr().out.startswith("usage: ")
+
+
 def test_cli_generates_pptx(tmp_path) -> None:
     output_dir = tmp_path / "output"
 
@@ -81,6 +92,32 @@ def test_cli_generates_pptx(tmp_path) -> None:
     assert str(output_path) in result.stdout
     assert output_path.exists()
     assert len(Presentation(output_path).slides) == 5
+
+
+def test_main_generates_pptx(tmp_path, capsys) -> None:
+    output_dir = tmp_path / "output"
+
+    exit_code = main(
+        [
+            "--topic",
+            "生成AIの業務活用",
+            "--purpose",
+            "proposal",
+            "--audience",
+            "経営層",
+            "--slides",
+            "3",
+            "--output",
+            str(output_dir),
+            "--deck-id",
+            "deck-main-test",
+        ]
+    )
+
+    output_path = output_dir / "deck-main-test.pptx"
+    assert exit_code == 0
+    assert capsys.readouterr().out.strip() == str(output_path)
+    assert output_path.exists()
 
 
 def test_cli_uses_default_templates_outside_project_root(tmp_path) -> None:
@@ -213,3 +250,25 @@ def test_cli_fails_when_template_does_not_match(tmp_path) -> None:
 
     assert result.returncode != 0
     assert "No matching template" in result.stderr
+
+
+def test_main_fails_when_template_does_not_match(tmp_path, capsys) -> None:
+    exit_code = main(
+        [
+            "--topic",
+            "生成AIの業務活用",
+            "--purpose",
+            "proposal",
+            "--audience",
+            "現場",
+            "--slides",
+            "3",
+            "--output",
+            str(tmp_path),
+        ]
+    )
+
+    captured = capsys.readouterr()
+    assert exit_code == 1
+    assert captured.out == ""
+    assert "No matching template" in captured.err
