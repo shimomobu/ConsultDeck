@@ -142,3 +142,11 @@
 - Phase: 6.5
 - Decision: `consultdeck` console scriptを`consultdeck.__main__:main`へ接続し、`python -m consultdeck`も維持する。
 - Rationale: 利用者が`PYTHONPATH=src`を設定せずにCLIを実行できるようにしつつ、開発時のmodule entrypointも残す。
+
+## Decision 021: CLIのデフォルトテンプレートはCWDに依存させない
+
+- Status: Accepted
+- Phase: MVP tag prep
+- Decision: `--templates`未指定時は、実行時CWDではなくプロジェクト同梱の`assets/templates`を参照する。
+- Rationale: console scriptをプロジェクトルート以外から実行しても、MVPの標準テンプレートを安定して読み込めるようにする。
+- Details: 明示的な`--templates <path>`が指定された場合は、そのパスを優先する。

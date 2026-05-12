@@ -50,11 +50,15 @@ def _build_parser(prog: str | None = None) -> argparse.ArgumentParser:
     parser.add_argument(
         "--templates",
         type=Path,
-        default=Path("assets/templates"),
+        default=_default_template_dir(),
         help="テンプレートYAMLディレクトリ",
     )
     parser.add_argument("--deck-id", default=None, help="出力ファイル名に使うdeck_id")
     return parser
+
+
+def _default_template_dir() -> Path:
+    return Path(__file__).resolve().parents[2] / "assets" / "templates"
 
 
 if __name__ == "__main__":
