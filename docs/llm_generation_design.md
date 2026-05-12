@@ -147,10 +147,10 @@ The preferred integration point is SlideBuilder or a small collaborator used by 
 Initial constructor shape:
 
 ```python
-SlideBuilder(content_generator: SlideContentGenerator | None = None)
+SlideBuilder(llm_provider: LlmProvider | None = None)
 ```
 
-Where `SlideContentGenerator` can be deterministic or LLM-backed. This keeps Pipeline orchestration simple:
+Where `LlmProvider` can be a fake provider in unit tests or a future Ollama-backed provider. This keeps Pipeline orchestration simple:
 
 - Pipeline still selects template.
 - Pipeline still builds outline.

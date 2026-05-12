@@ -164,7 +164,9 @@ def test_builder_uses_llm_provider_content_when_available() -> None:
     assert spec.slides[1].message == "DX推進における解決策を整理します。"
 
 
-def test_builder_falls_back_to_deterministic_content_when_provider_fails() -> None:
+def test_builder_falls_back_to_deterministic_content_when_provider_fails(
+    caplog,
+) -> None:
     builder = SlideBuilder(llm_provider=FailingProvider())
 
     spec = builder.build(_requirement(), _outline(), _template())
@@ -172,6 +174,7 @@ def test_builder_falls_back_to_deterministic_content_when_provider_fails() -> No
     assert spec.slides[0].message == "DX推進における課題を整理します。"
     assert spec.slides[0].bullets == ["課題の要点を確認する"]
     assert spec.slides[0].notes == "Audience: 経営層"
+    assert "LLM content generation failed; using deterministic fallback" in caplog.text
 
 
 def test_builder_falls_back_when_provider_content_is_invalid() -> None:

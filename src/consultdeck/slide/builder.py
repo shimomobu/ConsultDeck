@@ -1,4 +1,7 @@
+import logging
 from uuid import uuid4
+
+from pydantic import ValidationError
 
 from consultdeck.models.outline_spec import OutlineItem, OutlineSpec
 from consultdeck.models.requirement_spec import RequirementSpec
@@ -14,6 +17,9 @@ from consultdeck.slide.content_generator import (
 
 class SlideBuildError(ValueError):
     """Raised when SlideSpec cannot be built from the provided inputs."""
+
+
+logger = logging.getLogger(__name__)
 
 
 class SlideBuilder:
@@ -53,10 +59,12 @@ class SlideBuilder:
         requirement: RequirementSpec,
         generated: GeneratedSlideContent | None = None,
     ) -> Slide:
-        if generated:
+        if generated is not None:
             try:
                 return self._build_generated_slide(item, generated)
-            except ValueError:
+            except ValidationError:
+                # Invalid provider content should fall back per slide before
+                # SlideSpec construction, keeping deck generation available.
                 pass
 
         return self._build_deterministic_slide(item, requirement)
@@ -108,7 +116,11 @@ class SlideBuilder:
                     template_context=LlmTemplateContext.from_template(template),
                 )
             )
-        except Exception:
+        except Exception as exc:
+            logger.warning(
+                "LLM content generation failed; using deterministic fallback",
+                exc_info=exc,
+            )
             return {}
 
         return result.by_slide_id()
