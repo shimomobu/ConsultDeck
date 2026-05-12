@@ -7,6 +7,7 @@ import pytest
 from pptx import Presentation
 
 from consultdeck.__main__ import main
+from consultdeck.llm.provider_factory import build_llm_provider
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
@@ -118,6 +119,42 @@ def test_main_generates_pptx(tmp_path, capsys) -> None:
     assert exit_code == 0
     assert capsys.readouterr().out.strip() == str(output_path)
     assert output_path.exists()
+
+
+def test_main_accepts_fake_llm_provider_option(tmp_path, capsys) -> None:
+    output_dir = tmp_path / "output"
+
+    exit_code = main(
+        [
+            "--topic",
+            "生成AIの業務活用",
+            "--purpose",
+            "proposal",
+            "--audience",
+            "経営層",
+            "--slides",
+            "3",
+            "--output",
+            str(output_dir),
+            "--deck-id",
+            "deck-fake-llm",
+            "--llm-provider",
+            "fake",
+        ]
+    )
+
+    output_path = output_dir / "deck-fake-llm.pptx"
+    assert exit_code == 0
+    assert capsys.readouterr().out.strip() == str(output_path)
+    assert output_path.exists()
+
+
+def test_llm_provider_factory_returns_none_by_default() -> None:
+    assert build_llm_provider("none") is None
+
+
+def test_llm_provider_factory_builds_fake_provider() -> None:
+    assert build_llm_provider("fake") is not None
 
 
 def test_cli_uses_default_templates_outside_project_root(tmp_path) -> None:

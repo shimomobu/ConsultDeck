@@ -4,6 +4,7 @@ import argparse
 import sys
 from pathlib import Path
 
+from consultdeck.llm.provider_factory import build_llm_provider
 from consultdeck.models.requirement_spec import RequirementSpec
 from consultdeck.pipeline.pipeline import Pipeline, PipelineError
 
@@ -18,7 +19,10 @@ def main(argv: list[str] | None = None) -> int:
         audience=args.audience,
         slide_count=args.slides,
     )
-    pipeline = Pipeline(template_dir=args.templates)
+    pipeline = Pipeline(
+        template_dir=args.templates,
+        llm_provider=build_llm_provider(args.llm_provider),
+    )
 
     try:
         output_path = pipeline.run(
@@ -54,6 +58,12 @@ def _build_parser(prog: str | None = None) -> argparse.ArgumentParser:
         help="テンプレートYAMLディレクトリ",
     )
     parser.add_argument("--deck-id", default=None, help="出力ファイル名に使うdeck_id")
+    parser.add_argument(
+        "--llm-provider",
+        choices=["none", "fake"],
+        default="none",
+        help="本文生成Provider",
+    )
     return parser
 
 

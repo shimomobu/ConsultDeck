@@ -25,3 +25,4 @@
 - [x] TASK-027: Design prompt/parser and provider injection boundaries
 - [x] TASK-023: Implement LlmPromptBuilder
 - [x] TASK-024: Implement LlmResponseParser
+- [x] TASK-025: Add LLM provider factory and minimal CLI injection path

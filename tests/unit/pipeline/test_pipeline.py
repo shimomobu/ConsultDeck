@@ -8,6 +8,11 @@ from consultdeck.models.requirement_spec import RequirementSpec
 from consultdeck.models.slide_spec import SlideSpec
 from consultdeck.pipeline.pipeline import Pipeline, PipelineError
 from consultdeck.renderer.base import Renderer
+from consultdeck.slide.content_generator import (
+    FakeLlmProvider,
+    GeneratedSlideContent,
+    LlmGenerationResult,
+)
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
@@ -96,3 +101,37 @@ def test_pipeline_accepts_renderer_protocol_implementation(tmp_path) -> None:
     assert renderer.received_spec is not None
     assert renderer.received_spec.deck_id == "deck-stub"
     assert renderer.received_output_dir == tmp_path
+
+
+def test_pipeline_passes_llm_provider_to_slide_builder(tmp_path) -> None:
+    class StubRenderer:
+        def __init__(self) -> None:
+            self.received_spec: SlideSpec | None = None
+
+        def render(self, spec: SlideSpec, output_dir: Path) -> Path:
+            self.received_spec = spec
+            return output_dir / f"{spec.deck_id}.stub"
+
+    provider = FakeLlmProvider(
+        LlmGenerationResult(
+            slides=[
+                GeneratedSlideContent(
+                    slide_id="slide-001",
+                    message="Fake provider message",
+                    bullets=["fake bullet"],
+                )
+            ]
+        )
+    )
+    renderer = StubRenderer()
+    pipeline = Pipeline(
+        template_dir=TEMPLATE_DIR,
+        llm_provider=provider,
+        renderer=renderer,
+    )
+
+    pipeline.run(_requirement(), tmp_path, deck_id="deck-fake-provider")
+
+    assert renderer.received_spec is not None
+    assert renderer.received_spec.slides[0].message == "Fake provider message"
+    assert renderer.received_spec.slides[0].bullets == ["fake bullet"]

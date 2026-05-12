@@ -241,8 +241,8 @@ Avoid exposing broad provider configuration until Ollama works behind tests.
 
 Initial option set:
 
-- `--llm-provider {none,ollama}` with default `none`
-- `--ollama-model MODEL`, required only when provider is `ollama`
+- Current minimal slice: `--llm-provider {none,fake}` with default `none`
+- Next real-provider slice: `--llm-provider {none,ollama}` and `--ollama-model MODEL`
 - Optional later: `--ollama-base-url`, `--llm-timeout-seconds`, `--llm-retries`
 
 Do not add multi-provider routing options in the first Ollama slice.
