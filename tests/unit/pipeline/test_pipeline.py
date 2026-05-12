@@ -1,10 +1,13 @@
 from pathlib import Path
+from typing import get_type_hints
 
 import pytest
 from pptx import Presentation
 
 from consultdeck.models.requirement_spec import RequirementSpec
+from consultdeck.models.slide_spec import SlideSpec
 from consultdeck.pipeline.pipeline import Pipeline, PipelineError
+from consultdeck.renderer.base import Renderer
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
@@ -65,3 +68,31 @@ def test_pipeline_accepts_fixed_deck_id_for_deterministic_output(tmp_path) -> No
     output_path = pipeline.run(_requirement(), tmp_path, deck_id="deck-cli-test")
 
     assert output_path == tmp_path / "deck-cli-test.pptx"
+
+
+def test_pipeline_renderer_type_hint_uses_renderer_protocol() -> None:
+    hints = get_type_hints(Pipeline.__init__)
+
+    assert hints["renderer"] == Renderer | None
+
+
+def test_pipeline_accepts_renderer_protocol_implementation(tmp_path) -> None:
+    class StubRenderer:
+        def __init__(self) -> None:
+            self.received_spec: SlideSpec | None = None
+            self.received_output_dir: Path | None = None
+
+        def render(self, spec: SlideSpec, output_dir: Path) -> Path:
+            self.received_spec = spec
+            self.received_output_dir = output_dir
+            return output_dir / f"{spec.deck_id}.stub"
+
+    renderer = StubRenderer()
+    pipeline = Pipeline(template_dir=TEMPLATE_DIR, renderer=renderer)
+
+    output_path = pipeline.run(_requirement(), tmp_path, deck_id="deck-stub")
+
+    assert output_path == tmp_path / "deck-stub.stub"
+    assert renderer.received_spec is not None
+    assert renderer.received_spec.deck_id == "deck-stub"
+    assert renderer.received_output_dir == tmp_path

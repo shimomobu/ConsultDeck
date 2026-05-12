@@ -2,6 +2,7 @@ from pathlib import Path
 
 from consultdeck.models.requirement_spec import RequirementSpec
 from consultdeck.outline.builder import OutlineBuilder
+from consultdeck.renderer.base import Renderer
 from consultdeck.renderer.builtin_pptx_renderer import BuiltinPptxRenderer
 from consultdeck.slide.builder import SlideBuilder
 from consultdeck.template.repository import TemplateRepository
@@ -20,7 +21,7 @@ class Pipeline:
         template_selector: TemplateSelector | None = None,
         outline_builder: OutlineBuilder | None = None,
         slide_builder: SlideBuilder | None = None,
-        renderer: BuiltinPptxRenderer | None = None,
+        renderer: Renderer | None = None,
     ) -> None:
         self.template_repository = template_repository or TemplateRepository(template_dir)
         self.template_selector = template_selector or TemplateSelector()
@@ -50,4 +51,4 @@ class Pipeline:
             template,
             deck_id=deck_id,
         )
-        return self.renderer.render(slide_spec, template, Path(output_dir))
+        return self.renderer.render(slide_spec, Path(output_dir))

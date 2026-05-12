@@ -2,23 +2,7 @@ import pytest
 from pptx import Presentation
 
 from consultdeck.models.slide_spec import LayoutType, Slide, SlideSpec
-from consultdeck.models.template_spec import TemplateSpec
 from consultdeck.renderer.builtin_pptx_renderer import BuiltinPptxRenderer
-
-
-def _template() -> TemplateSpec:
-    return TemplateSpec(
-        template_id="proposal_standard",
-        name="Proposal Standard",
-        doc_type="proposal",
-        use_case="提案書",
-        audience="経営層",
-        phase="proposal",
-        slide_structure=["表紙", "課題", "比較", "補足"],
-        layout_rules={},
-        style_rules={"font": "Arial"},
-        output_targets=["pptx"],
-    )
 
 
 def _slide_spec() -> SlideSpec:
@@ -63,7 +47,7 @@ def _slide_spec() -> SlideSpec:
 def test_renderer_creates_pptx_file(tmp_path) -> None:
     renderer = BuiltinPptxRenderer()
 
-    output_path = renderer.render(_slide_spec(), _template(), tmp_path)
+    output_path = renderer.render(_slide_spec(), tmp_path)
 
     assert output_path == tmp_path / "deck-test.pptx"
     assert output_path.exists()
@@ -74,7 +58,7 @@ def test_renderer_creates_output_dir_when_missing(tmp_path) -> None:
     renderer = BuiltinPptxRenderer()
     output_dir = tmp_path / "nested" / "output"
 
-    output_path = renderer.render(_slide_spec(), _template(), output_dir)
+    output_path = renderer.render(_slide_spec(), output_dir)
 
     assert output_dir.exists()
     assert output_path.exists()
@@ -83,7 +67,7 @@ def test_renderer_creates_output_dir_when_missing(tmp_path) -> None:
 def test_renderer_creates_one_pptx_slide_per_slide_spec_slide(tmp_path) -> None:
     renderer = BuiltinPptxRenderer()
 
-    output_path = renderer.render(_slide_spec(), _template(), tmp_path)
+    output_path = renderer.render(_slide_spec(), tmp_path)
 
     presentation = Presentation(output_path)
     assert len(presentation.slides) == len(_slide_spec().slides)
@@ -92,7 +76,7 @@ def test_renderer_creates_one_pptx_slide_per_slide_spec_slide(tmp_path) -> None:
 def test_renderer_handles_minimum_layouts(tmp_path) -> None:
     renderer = BuiltinPptxRenderer()
 
-    output_path = renderer.render(_slide_spec(), _template(), tmp_path)
+    output_path = renderer.render(_slide_spec(), tmp_path)
 
     presentation = Presentation(output_path)
     text_by_slide = [
@@ -110,7 +94,7 @@ def test_renderer_handles_minimum_layouts(tmp_path) -> None:
 def test_renderer_writes_slide_notes_to_speaker_notes(tmp_path) -> None:
     renderer = BuiltinPptxRenderer()
 
-    output_path = renderer.render(_slide_spec(), _template(), tmp_path)
+    output_path = renderer.render(_slide_spec(), tmp_path)
 
     presentation = Presentation(output_path)
     assert presentation.slides[1].notes_slide.notes_text_frame.text == (
@@ -121,7 +105,7 @@ def test_renderer_writes_slide_notes_to_speaker_notes(tmp_path) -> None:
 def test_renderer_handles_missing_notes(tmp_path) -> None:
     renderer = BuiltinPptxRenderer()
 
-    output_path = renderer.render(_slide_spec(), _template(), tmp_path)
+    output_path = renderer.render(_slide_spec(), tmp_path)
 
     presentation = Presentation(output_path)
     assert presentation.slides[0].notes_slide.notes_text_frame.text == ""
@@ -168,7 +152,7 @@ def test_renderer_cannot_write_outside_output_dir_with_deck_id(tmp_path) -> None
     renderer = BuiltinPptxRenderer()
     output_dir = tmp_path / "output"
 
-    output_path = renderer.render(_slide_spec(), _template(), output_dir)
+    output_path = renderer.render(_slide_spec(), output_dir)
 
     assert output_path.resolve().parent == output_dir.resolve()
     assert not (tmp_path / "deck-test.pptx").exists()

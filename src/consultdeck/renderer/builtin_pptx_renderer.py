@@ -5,14 +5,12 @@ from pptx.enum.text import PP_ALIGN
 from pptx.util import Inches, Pt
 
 from consultdeck.models.slide_spec import LayoutType, Slide, SlideSpec
-from consultdeck.models.template_spec import TemplateSpec
 
 
 class BuiltinPptxRenderer:
     def render(
         self,
         spec: SlideSpec,
-        template: TemplateSpec,
         output_dir: Path,
     ) -> Path:
         output_dir.mkdir(parents=True, exist_ok=True)

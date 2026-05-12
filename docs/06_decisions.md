@@ -18,7 +18,7 @@
 
 - Status: Accepted
 - Phase: 0
-- Decision: Rendererは`render(spec: SlideSpec, template: TemplateSpec, output_dir: Path) -> Path`の境界で差し替え可能にする。
+- Decision: Rendererは`render(spec: SlideSpec, output_dir: Path) -> Path`の境界で差し替え可能にする。
 - Rationale: 内蔵Rendererと外部Rendererを同じアプリケーション層から扱い、PPTX生成方式の変更を局所化する。
 
 ## Decision 004: MCP経由のPPT生成を将来拡張として考慮する
@@ -97,7 +97,7 @@
 
 - Status: Accepted
 - Phase: 5
-- Decision: BuiltinPptxRendererはpython-pptxをRenderer層に閉じ込め、SlideSpecとTemplateSpecから編集可能な`.pptx`を生成する。
+- Decision: BuiltinPptxRendererはpython-pptxをRenderer層に閉じ込め、SlideSpecから編集可能な`.pptx`を生成する。
 - Rationale: Phase 5では見た目の完成度より、Renderer境界、実ファイル生成、スライド数一致、基本layout処理を優先する。
 - Details: 出力ファイル名は`spec.deck_id + ".pptx"`とする。TITLE、CONTENT、TWO_COLUMN、BLANKの最小レイアウトだけを処理する。
 
@@ -107,6 +107,7 @@
 - Phase: 5.5
 - Decision: Renderer境界はABCではなくProtocolで表現する。
 - Rationale: BuiltinPptxRendererと将来のMcpRendererを疎結合に保ち、継承よりも構造的部分型で差し替え可能性を表現する。
+- Details: Protocolの契約は`render(spec: SlideSpec, output_dir: Path) -> Path`に限定し、TemplateSpecなどテンプレート管理の詳細をRenderer境界へ持ち込まない。
 
 ## Decision 016: deck_idはファイル名stemとして扱う
 

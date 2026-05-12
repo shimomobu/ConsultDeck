@@ -13,7 +13,7 @@
 | R-001 | audienceエイリアス未対応 | 「経営層」「役員」「CxO」などの語彙揺れでテンプレート候補が出ない | Medium | MVPでは完全一致を維持。Phase 6以降で必要性を見てalias辞書を追加 | Post-MVP | Accepted |
 | R-002 | TemplateSelectorのスコアリング未対応 | 複数候補がある場合の優先順位を表現できない | Medium | テンプレート数が増えるまでは単純filterを維持。候補増加時にscore設計を追加 | Post-MVP | Accepted |
 | R-003 | doc_type aliasが固定辞書のみ | 未登録の資料種別や表記揺れに弱い | Medium | Phase 6以降で設定ファイル化またはTemplateSpec側のmetadata化を検討 | Phase 6以降 | Open |
-| R-004 | layout_rules/style_rulesの本格反映未対応 | テンプレートごとの差別化、配色、余白、レイアウト品質が出ない | High | Phase 6以降でBuiltinPptxRendererが参照する最小ルールから段階的に実装 | Phase 6以降 | Open |
+| R-004 | layout_rules/style_rulesの本格反映未対応 | テンプレートごとの差別化、配色、余白、レイアウト品質が出ない | High | Phase 6以降でSlideSpecまたはRenderer設定へ必要な最小スタイル情報を渡す方式を決め、段階的に実装 | Phase 6以降 | Open |
 | R-005 | speaker notesの書式制御未対応 | notesは入るが、段落・箇条書き・書式を保持できない | Low | MVPではプレーンテキストで許容。必要に応じてnotes整形を追加 | Post-MVP | Accepted |
 | R-006 | deck_idのWindows予約名・長すぎる名前未制御 | Windows環境で保存失敗、またはファイルシステム制限に触れる可能性がある | Medium | Phase 6以降で予約名・長さ制限を追加する | Phase 6以降 | Open |
 | R-007 | 同一deck_idで上書きされる | 過去の出力ファイルを失う可能性がある | Medium | MVPではDecision 017として許容。呼び出し側がdeck_id/output_dirを管理する | MVP | Accepted |
