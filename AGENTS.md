@@ -112,3 +112,16 @@ Never finish with code changes only.
 
 Do not expand scope without explicit justification.
 Prefer the smallest viable implementation that satisfies tests and architecture constraints.
+
+## Task Naming Rule
+
+Use the following task format in `docs/tasks/*.md`:
+
+- [ ] TASK-001: Short task name
+- [x] TASK-001: Short task name
+
+Rules:
+- Keep TASK IDs unique.
+- Do not reuse completed TASK IDs.
+- Do not change task meaning when moving between Backlog, Doing, and Done.
+- Preserve checkbox state according to task status.
