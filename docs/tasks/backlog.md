@@ -10,3 +10,15 @@
 
 - [ ] TASK-004: theme loader
 - [ ] TASK-005: validation
+
+## MVP tag follow-up
+
+- [ ] TASK-011: GitHub remote + push
+- [ ] TASK-012: Register R-021 for wheel build missing assets/templates risk
+- [ ] TASK-013: Improve CLI coverage for src/consultdeck/__main__.py
+- [ ] TASK-014: Plan Phase 6 LLM body generation
+- [ ] TASK-015: Plan Phase 6 layout_rules implementation
+- [ ] TASK-016: Plan Phase 6 template evolution
+- [ ] TASK-017: Minor cleanup deck_id validator readability
+- [ ] TASK-018: Minor cleanup TWO_COLUMN fallback test
+- [ ] TASK-019: Minor cleanup NonBlankString commonization
