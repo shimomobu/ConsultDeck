@@ -83,3 +83,27 @@ If applicable, update:
 - docs/07_risks.md
 
 If no update is needed, explicitly report why.
+
+# Agent Rules
+
+## Task Management
+
+Before starting work:
+- Read `docs/tasks/backlog.md`
+- Move the target task to `docs/tasks/doing.md`
+- Confirm acceptance criteria
+
+During work:
+- Follow TDD
+- Add failing tests first
+- Keep implementation minimal
+- Do not change unrelated files
+
+After completing work:
+- Run tests
+- Move the task to `docs/tasks/done.md`
+- Update `docs/progress.md`
+- Update `docs/decisions.md` if design decisions changed
+- Update `docs/risks.md` if risks were found
+
+Never finish with code changes only.
