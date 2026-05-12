@@ -102,8 +102,13 @@ During work:
 After completing work:
 - Run tests
 - Move the task to `docs/tasks/done.md`
-- Update `docs/progress.md`
-- Update `docs/decisions.md` if design decisions changed
-- Update `docs/risks.md` if risks were found
+- Update `docs/progress.md` if it exists
+- Update `docs/06_decisions.md` if design decisions changed
+- Update `docs/07_risks.md` if risks were found
 
 Never finish with code changes only.
+
+## Scope Control
+
+Do not expand scope without explicit justification.
+Prefer the smallest viable implementation that satisfies tests and architecture constraints.
