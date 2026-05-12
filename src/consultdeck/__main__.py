@@ -9,7 +9,7 @@ from consultdeck.pipeline.pipeline import Pipeline, PipelineError
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = _build_parser()
+    parser = _build_parser(prog=_default_prog())
     args = parser.parse_args(argv)
 
     requirement = RequirementSpec(
@@ -34,8 +34,14 @@ def main(argv: list[str] | None = None) -> int:
     return 0
 
 
-def _build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="python -m consultdeck")
+def _default_prog() -> str | None:
+    if Path(sys.argv[0]).name == "__main__.py":
+        return "python -m consultdeck"
+    return None
+
+
+def _build_parser(prog: str | None = None) -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(prog=prog)
     parser.add_argument("--topic", required=True, help="資料テーマ")
     parser.add_argument("--purpose", required=True, help="資料種別。例: proposal")
     parser.add_argument("--audience", required=True, help="想定読者")

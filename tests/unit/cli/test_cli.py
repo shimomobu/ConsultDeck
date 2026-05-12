@@ -15,6 +15,35 @@ def _env() -> dict[str, str]:
     return env
 
 
+def test_console_script_help_uses_console_command_name() -> None:
+    result = subprocess.run(
+        [str(Path(sys.executable).with_name("consultdeck")), "--help"],
+        cwd=PROJECT_ROOT,
+        env=_env(),
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+    assert result.returncode == 0
+    assert result.stdout.startswith("usage: consultdeck ")
+    assert "usage: python -m consultdeck" not in result.stdout
+
+
+def test_module_help_uses_module_command_name() -> None:
+    result = subprocess.run(
+        [sys.executable, "-m", "consultdeck", "--help"],
+        cwd=PROJECT_ROOT,
+        env=_env(),
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+    assert result.returncode == 0
+    assert result.stdout.startswith("usage: python -m consultdeck ")
+
+
 def test_cli_generates_pptx(tmp_path) -> None:
     output_dir = tmp_path / "output"
 
