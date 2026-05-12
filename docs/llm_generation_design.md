@@ -113,6 +113,61 @@ Initial prompt requirements:
 
 Output parsing must be strict enough to reject malformed provider output, then allow fallback.
 
+## Prompt Builder Responsibility
+
+`LlmPromptBuilder` owns prompt text construction. It should be provider-agnostic and deterministic for the same `LlmGenerationRequest`.
+
+Responsibilities:
+
+- Convert `LlmGenerationRequest` into one prompt string.
+- Include slide ids, titles, roles, audience, purpose, tone, and template context.
+- Specify the expected response shape.
+- Avoid Renderer-specific or PPTX-specific instructions.
+- Keep prompt wording in one module so OllamaProvider does not grow ad hoc string assembly.
+
+Non-responsibilities:
+
+- Calling Ollama or any model runtime.
+- Parsing provider responses.
+- Retrying failed calls.
+- Building SlideSpec.
+
+Initial output contract should ask for JSON with a top-level `slides` list:
+
+```json
+{
+  "slides": [
+    {
+      "slide_id": "slide-001",
+      "message": "one concise message",
+      "bullets": ["bullet 1"],
+      "notes": "optional speaker note"
+    }
+  ]
+}
+```
+
+## Response Parser Responsibility
+
+`LlmResponseParser` owns conversion from provider text to `LlmGenerationResult`.
+
+Responsibilities:
+
+- Parse JSON text returned by a provider.
+- Validate the top-level shape and per-slide fields.
+- Ignore unknown fields.
+- Return `LlmGenerationResult` for valid records.
+- Raise a typed parse error for malformed JSON or invalid required fields.
+
+Non-responsibilities:
+
+- Calling providers.
+- Deciding retry behavior.
+- Falling back to deterministic content.
+- Applying content to SlideSpec.
+
+Fallback remains in SlideBuilder. If the parser rejects a provider response, OllamaProvider should surface a provider failure and SlideBuilder should use deterministic fallback.
+
 ## Failure Fallback Strategy
 
 Deterministic fallback remains mandatory.
@@ -140,6 +195,13 @@ Initial rule:
 
 The pipeline should not implement provider-specific retry loops. It may choose fallback when the generation component returns failure.
 
+Logging responsibility:
+
+- Provider adapters log provider call failures at warning level.
+- SlideBuilder logs fallback after provider exceptions.
+- Parser errors should be logged without dumping full prompt or full model output by default.
+- CLI should avoid printing provider internals in the first implementation.
+
 ## Pipeline Integration Point
 
 The preferred integration point is SlideBuilder or a small collaborator used by SlideBuilder.
@@ -159,6 +221,32 @@ Where `LlmProvider` can be a fake provider in unit tests or a future Ollama-back
 
 Do not add a DI container. Passing an optional collaborator is enough for Phase 6.
 
+### Provider Injection Path
+
+Provider construction should be isolated from Pipeline orchestration.
+
+Recommended path:
+
+1. Add a small CLI/provider factory module, for example `consultdeck.llm.provider_factory`.
+2. CLI parses minimal LLM options and asks the factory for `LlmProvider | None`.
+3. CLI passes the provider into `Pipeline`.
+4. Pipeline passes it into `SlideBuilder`, or accepts a prebuilt `SlideBuilder`.
+5. SlideBuilder remains the only component that applies provider output to SlideSpec.
+
+Pipeline should not construct OllamaProvider directly. CLI should not assemble prompts or parse responses.
+
+### Minimal CLI Option Proposal
+
+Avoid exposing broad provider configuration until Ollama works behind tests.
+
+Initial option set:
+
+- `--llm-provider {none,ollama}` with default `none`
+- `--ollama-model MODEL`, required only when provider is `ollama`
+- Optional later: `--ollama-base-url`, `--llm-timeout-seconds`, `--llm-retries`
+
+Do not add multi-provider routing options in the first Ollama slice.
+
 ## Ollama Future Integration
 
 Ollama should be a provider adapter, not a core dependency.
@@ -167,8 +255,10 @@ Future shape:
 
 - `OllamaLlmProvider` implements `LlmProvider`.
 - It lives in an optional module or behind an optional dependency group.
+- It receives `LlmPromptBuilder` and `LlmResponseParser` collaborators, or creates defaults internally.
 - It accepts model name, base URL, timeout, and retry settings.
 - It returns structured provider output or raises/returns a typed provider failure.
+- It does not contain ad hoc prompt string construction or JSON parsing logic.
 
 Unit tests should continue to use FakeProvider. Ollama can have integration tests that are skipped unless explicitly enabled.
 
@@ -189,13 +279,19 @@ Unit tests should continue to use FakeProvider. Ollama can have integration test
 - Introduce prompt builder and strict parser.
 - Keep both provider-independent.
 
-### Step 4: Ollama Adapter
+### Step 4: Provider Factory and Injection Path
+
+- Add a small factory that maps minimal CLI options to `LlmProvider | None`.
+- Keep Pipeline free of provider construction logic.
+- Add tests with fake/factory doubles before exposing real Ollama.
+
+### Step 5: Ollama Adapter
 
 - Add optional Ollama provider.
 - Keep unit tests fake-only.
 - Add opt-in integration test instructions.
 
-### Step 5: Multi-Provider
+### Step 6: Multi-Provider
 
 - Add provider selection only when a second real provider is needed.
 - Avoid generic orchestration framework until real duplication appears.
@@ -208,6 +304,10 @@ Minimum test coverage:
 - Fake provider success replaces placeholder content.
 - Fake provider failure falls back to deterministic content.
 - Partial invalid provider output falls back per slide.
+- Prompt builder output is deterministic and contains required slide ids.
+- Response parser accepts valid JSON and rejects malformed/invalid output.
+- OllamaProvider unit tests use a fake HTTP transport, not a real Ollama process.
+- Provider factory returns `None` by default and builds Ollama only when explicitly requested.
 - Generated content still produces a valid SlideSpec.
 - Renderer tests remain unchanged because Renderer receives SlideSpec only.
 - CLI tests remain mostly unchanged until provider configuration is exposed.
@@ -221,6 +321,7 @@ Related risks:
 - R-009: LLM body generation is currently missing.
 - R-022: Optional dependency boundaries must stay clear when adding LLM support.
 - R-023: Provider failure or malformed output can destabilize deck generation if fallback is not enforced.
+- R-024: Prompt/response parsing can drift into provider adapters or CLI if not kept behind explicit boundaries.
 
 Decision impact:
 
@@ -244,3 +345,4 @@ Do not:
 - Add async pipelines unless the provider adapter requires it and tests justify it.
 - Let provider output bypass SlideSpec validation.
 - Put prompt text into CLI or Renderer modules.
+- Parse provider output inside CLI or Pipeline.

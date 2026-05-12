@@ -14,6 +14,10 @@
 ## MVP tag follow-up
 
 - [ ] TASK-011: GitHub remote + push
+- [ ] TASK-023: Implement LlmPromptBuilder
+- [ ] TASK-024: Implement LlmResponseParser
+- [ ] TASK-025: Add LLM provider factory and minimal CLI injection path
+- [ ] TASK-026: Implement OllamaLlmProvider with fake HTTP tests
 - [ ] TASK-017: Minor cleanup deck_id validator readability
 - [ ] TASK-018: Minor cleanup TWO_COLUMN fallback test
 - [ ] TASK-019: Minor cleanup NonBlankString commonization

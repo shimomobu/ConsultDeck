@@ -33,3 +33,4 @@
 | R-021 | wheelビルドに`assets/templates`が未同梱 | `pyproject.toml`のwheel設定が`packages = ["src/consultdeck"]`のみのため、non-editable install後にCLIのデフォルトテンプレート参照が壊れる可能性が高い | Medium | R-020の具体化リスク。editable install前提のMVPではタグ阻害にしない。Phase 6でpackage-data、hatch artifacts、`importlib.resources`などを検討する | Phase 6 | Open |
 | R-022 | optional dependencyの境界未整理 | LLM、画像生成、MCP連携を同時に必須依存へ入れると、軽量CLI利用や環境構築が不安定になる | Medium | Phase 6でcoreとoptional groupsを分け、base installでCLIとBuiltinPptxRendererが動く状態を維持する | Phase 6 | Open |
 | R-023 | LLM Provider失敗時にdeck生成が不安定化する | タイムアウト、接続失敗、形式不正、部分出力によりSlideSpec生成が失敗し、CLI全体が使えなくなる可能性がある | High | Provider境界で例外と不正コンテンツを閉じ込め、Fake Providerで成功・失敗・部分不正をTDDし、deterministic fallbackを必須にする | Phase 6 | Mitigated |
+| R-024 | Prompt/Parser責務がProviderやCLIへ漏れる | OllamaProvider内にアドホックな文字列操作やJSON解析が増え、テスト困難・Provider差し替え困難になる | Medium | `LlmPromptBuilder`と`LlmResponseParser`をProvider非依存の境界として先に実装し、CLIはProvider factoryだけを呼ぶ | Phase 6 | Open |

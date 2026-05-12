@@ -22,3 +22,4 @@
 - [x] TASK-020: Design minimal LLM body generation boundary
 - [x] TASK-021: Implement minimal LLM body generation with fake provider fallback
 - [x] TASK-022: Address LLM fake provider minor review findings
+- [x] TASK-027: Design prompt/parser and provider injection boundaries
