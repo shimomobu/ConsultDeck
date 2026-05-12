@@ -1,8 +1,12 @@
+import pytest
+
 from consultdeck.models.outline_spec import OutlineItem, OutlineSpec
 from consultdeck.models.requirement_spec import RequirementSpec
 from consultdeck.slide.content_generator import (
+    LlmParseError,
     LlmGenerationRequest,
     LlmPromptBuilder,
+    LlmResponseParser,
     LlmTemplateContext,
 )
 
@@ -62,3 +66,56 @@ def test_prompt_builder_requests_json_slide_output() -> None:
     assert '"message"' in prompt
     assert '"bullets"' in prompt
     assert '"notes"' in prompt
+
+
+def test_response_parser_parses_valid_slide_json() -> None:
+    raw = """
+{
+  "slides": [
+    {
+      "slide_id": "slide-001",
+      "message": "LLM message",
+      "bullets": ["point 1", "point 2"],
+      "notes": "speaker note",
+      "ignored": "value"
+    }
+  ]
+}
+"""
+
+    result = LlmResponseParser().parse(raw)
+
+    assert len(result.slides) == 1
+    assert result.slides[0].slide_id == "slide-001"
+    assert result.slides[0].message == "LLM message"
+    assert result.slides[0].bullets == ["point 1", "point 2"]
+    assert result.slides[0].notes == "speaker note"
+
+
+def test_response_parser_defaults_optional_bullets_and_notes() -> None:
+    raw = '{"slides": [{"slide_id": "slide-001", "message": "LLM message"}]}'
+
+    result = LlmResponseParser().parse(raw)
+
+    assert result.slides[0].bullets == []
+    assert result.slides[0].notes is None
+
+
+@pytest.mark.parametrize(
+    "raw",
+    [
+        "{not json}",
+        "{}",
+        '{"slides": "not-a-list"}',
+        '{"slides": [{"message": "missing slide id"}]}',
+        '{"slides": [{"slide_id": "slide-001"}]}',
+        '{"slides": [{"slide_id": 1, "message": "bad id"}]}',
+        '{"slides": [{"slide_id": "slide-001", "message": 1}]}',
+        '{"slides": [{"slide_id": "slide-001", "message": "ok", "bullets": "bad"}]}',
+        '{"slides": [{"slide_id": "slide-001", "message": "ok", "bullets": [1]}]}',
+        '{"slides": [{"slide_id": "slide-001", "message": "ok", "notes": 1}]}',
+    ],
+)
+def test_response_parser_rejects_malformed_or_invalid_json(raw: str) -> None:
+    with pytest.raises(LlmParseError):
+        LlmResponseParser().parse(raw)

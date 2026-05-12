@@ -24,3 +24,4 @@
 - [x] TASK-022: Address LLM fake provider minor review findings
 - [x] TASK-027: Design prompt/parser and provider injection boundaries
 - [x] TASK-023: Implement LlmPromptBuilder
+- [x] TASK-024: Implement LlmResponseParser
