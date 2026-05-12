@@ -69,3 +69,17 @@ Report in Japanese with:
 - Design decisions
 - Remaining risks
 - Commit status
+
+## Documentation update rule
+
+For every implementation or review task, check whether the change introduces, resolves, or modifies:
+- design decisions
+- known risks
+- residual risks
+- operational constraints
+
+If applicable, update:
+- docs/06_decisions.md
+- docs/07_risks.md
+
+If no update is needed, explicitly report why.
