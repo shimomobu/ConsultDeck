@@ -117,8 +117,10 @@ Prefer the smallest viable implementation that satisfies tests and architecture 
 
 Use the following task format in `docs/tasks/*.md`:
 
+```markdown
 - [ ] TASK-001: Short task name
 - [x] TASK-001: Short task name
+```
 
 Rules:
 - Keep TASK IDs unique.
