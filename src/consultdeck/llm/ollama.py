@@ -46,9 +46,8 @@ class OllamaLlmProvider:
         ) as client:
             response = client.post("/api/generate", json=payload)
             response.raise_for_status()
-
-        raw = self._extract_response_text(response)
-        return self.response_parser.parse(raw)
+            raw = self._extract_response_text(response)
+            return self.response_parser.parse(raw)
 
     def _extract_response_text(self, response: httpx.Response) -> str:
         try:

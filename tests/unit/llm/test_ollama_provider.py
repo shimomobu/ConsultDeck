@@ -127,6 +127,54 @@ def test_ollama_provider_uses_injected_prompt_builder_and_parser() -> None:
     assert parser.received_raw == "RAW MODEL OUTPUT"
 
 
+def test_ollama_provider_finishes_response_parsing_before_client_exit(
+    monkeypatch,
+) -> None:
+    state = {"closed": False}
+
+    class StubResponse:
+        def raise_for_status(self) -> None:
+            return None
+
+        def json(self) -> dict[str, str]:
+            if state["closed"]:
+                raise AssertionError("response.json() called after client exit")
+            return {"response": "RAW MODEL OUTPUT"}
+
+    class StubClient:
+        def __init__(self, *, base_url, timeout, transport) -> None:
+            self.base_url = base_url
+            self.timeout = timeout
+            self.transport = transport
+
+        def __enter__(self):
+            state["closed"] = False
+            return self
+
+        def __exit__(self, exc_type, exc, tb) -> None:
+            state["closed"] = True
+            return None
+
+        def post(self, url: str, json: dict[str, object]) -> StubResponse:
+            return StubResponse()
+
+    class StubParser:
+        def parse(self, raw: str) -> LlmGenerationResult:
+            if state["closed"]:
+                raise AssertionError("parser.parse() called after client exit")
+            assert raw == "RAW MODEL OUTPUT"
+            return LlmGenerationResult(slides=[])
+
+    monkeypatch.setattr("consultdeck.llm.ollama.httpx.Client", StubClient)
+
+    provider = OllamaLlmProvider(response_parser=StubParser())
+
+    result = provider.generate_slide_content(_request())
+
+    assert result.slides == []
+    assert state["closed"] is True
+
+
 def test_ollama_provider_propagates_http_errors() -> None:
     def handler(http_request: httpx.Request) -> httpx.Response:
         raise httpx.ConnectError("connection failed", request=http_request)
