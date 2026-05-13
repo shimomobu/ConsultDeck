@@ -163,6 +163,13 @@ def test_llm_provider_factory_builds_fake_provider() -> None:
     assert build_llm_provider("fake") is not None
 
 
+def test_llm_provider_factory_builds_ollama_provider_with_requested_model() -> None:
+    provider = build_llm_provider("ollama", model_name="gemma4:latest")
+
+    assert provider is not None
+    assert provider.model == "gemma4:latest"
+
+
 def test_cli_uses_default_templates_outside_project_root(tmp_path) -> None:
     cwd = tmp_path / "outside"
     cwd.mkdir()

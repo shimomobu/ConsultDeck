@@ -21,7 +21,10 @@ def main(argv: list[str] | None = None) -> int:
     )
     pipeline = Pipeline(
         template_dir=args.templates,
-        llm_provider=build_llm_provider(args.llm_provider),
+        llm_provider=build_llm_provider(
+            args.llm_provider,
+            model_name=args.llm_model,
+        ),
     )
 
     try:
@@ -63,6 +66,11 @@ def _build_parser(prog: str | None = None) -> argparse.ArgumentParser:
         choices=["none", "fake", "ollama"],
         default="none",
         help="本文生成Provider",
+    )
+    parser.add_argument(
+        "--llm-model",
+        default="gemma4:latest",
+        help="LLM model name for providers that use a model selector",
     )
     return parser
 

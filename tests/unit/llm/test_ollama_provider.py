@@ -56,7 +56,7 @@ def test_ollama_provider_posts_generate_request_and_parses_response() -> None:
         assert http_request.method == "POST"
         assert http_request.url == httpx.URL("http://ollama.local:11434/api/generate")
         payload = json.loads(http_request.content.decode("utf-8"))
-        assert payload["model"] == "gemma3"
+        assert payload["model"] == "gemma4:latest"
         assert payload["stream"] is False
         assert "Theme: DX推進" in payload["prompt"]
         return httpx.Response(
@@ -244,6 +244,18 @@ def test_llm_provider_factory_builds_ollama_provider() -> None:
     assert isinstance(build_llm_provider("ollama"), OllamaLlmProvider)
 
 
+def test_llm_provider_factory_passes_model_to_ollama_provider() -> None:
+    provider = build_llm_provider("ollama", model_name="gemma4:latest")
+
+    assert isinstance(provider, OllamaLlmProvider)
+    assert provider.model == "gemma4:latest"
+
+
+def test_llm_provider_factory_ignores_model_for_none_and_fake() -> None:
+    assert build_llm_provider("none", model_name="gemma4:latest") is None
+    assert build_llm_provider("fake", model_name="gemma4:latest") is not None
+
+
 def test_cli_accepts_ollama_llm_provider_choice() -> None:
     parser = _build_parser()
     args = parser.parse_args(
@@ -264,3 +276,51 @@ def test_cli_accepts_ollama_llm_provider_choice() -> None:
     )
 
     assert args.llm_provider == "ollama"
+
+
+def test_cli_accepts_llm_model_for_ollama() -> None:
+    parser = _build_parser()
+    args = parser.parse_args(
+        [
+            "--topic",
+            "DX推進",
+            "--purpose",
+            "proposal",
+            "--audience",
+            "経営層",
+            "--slides",
+            "2",
+            "--output",
+            "output",
+            "--llm-provider",
+            "ollama",
+            "--llm-model",
+            "gemma4:latest",
+        ]
+    )
+
+    assert args.llm_provider == "ollama"
+    assert args.llm_model == "gemma4:latest"
+
+
+def test_cli_defaults_llm_model_without_affecting_non_ollama_providers() -> None:
+    parser = _build_parser()
+    args = parser.parse_args(
+        [
+            "--topic",
+            "DX推進",
+            "--purpose",
+            "proposal",
+            "--audience",
+            "経営層",
+            "--slides",
+            "2",
+            "--output",
+            "output",
+            "--llm-provider",
+            "fake",
+        ]
+    )
+
+    assert args.llm_provider == "fake"
+    assert args.llm_model == "gemma4:latest"

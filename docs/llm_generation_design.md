@@ -242,8 +242,9 @@ Avoid exposing broad provider configuration until Ollama works behind tests.
 Initial option set:
 
 - Current implemented slice: `--llm-provider {none,fake,ollama}` with default `none`
-- Current Ollama settings: fixed native `POST /api/generate`, fixed `model="gemma3"`, provider-owned timeout
-- Optional later: `--ollama-base-url`, `--ollama-model`, `--llm-timeout-seconds`, `--llm-retries`
+- Current implemented model option: `--llm-model MODEL`, default `gemma4:latest`
+- Current Ollama settings: native `POST /api/generate`, fixed `base_url="http://127.0.0.1:11434"`, provider-owned timeout
+- Optional later: `--llm-base-url`, `--llm-timeout-seconds`, `--llm-retries`
 
 Do not add multi-provider routing options in the first Ollama slice.
 

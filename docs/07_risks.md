@@ -35,4 +35,4 @@
 | R-023 | LLM Provider失敗時にdeck生成が不安定化する | タイムアウト、接続失敗、形式不正、部分出力によりSlideSpec生成が失敗し、CLI全体が使えなくなる可能性がある | High | Provider境界で例外と不正コンテンツを閉じ込め、Fake Providerで成功・失敗・部分不正をTDDし、deterministic fallbackを必須にする | Phase 6 | Mitigated |
 | R-024 | Prompt/Parser責務がProviderやCLIへ漏れる | OllamaProvider内にアドホックな文字列操作やJSON解析が増え、テスト困難・Provider差し替え困難になる | Medium | `LlmPromptBuilder`と`LlmResponseParser`をProvider非依存の境界として先に実装し、CLIはProvider factoryだけを呼ぶ | Phase 6 | Mitigated |
 | R-025 | CLIの`choices`と`build_llm_provider()`の同期漏れ | `--llm-provider` の選択肢追加時にCLIとfactoryの片方だけ更新すると、ヘルプ表示・引数受理・実行時分岐が不整合になる | Medium | Provider追加時はCLI choicesとfactoryを同一変更で更新し、factoryテストとCLI経路テストの両方で検知する | Phase 6 | Mitigated |
-| R-026 | Ollama接続設定が固定値前提 | 初期実装は `gemma3` と `http://127.0.0.1:11434` を固定しているため、利用環境によってはCLIで `ollama` を選んでも接続失敗する | Medium | MVPでは adapter 契約固定を優先する。次段階で設定ファイルまたはCLIから base_url/model を注入できるようにする | Phase 6以降 | Open |
+| R-026 | Ollama接続設定の一部が環境依存 | model は `--llm-model` で指定可能になったが、`base_url` は依然として `http://127.0.0.1:11434` 固定のため、非標準ポートやリモート Ollama 構成ではCLI疎通に失敗する | Medium | Phase 6では model 可変化までを対応済みとし、次段階で設定ファイルまたはCLIから base_url を注入できるようにする | Phase 6以降 | Open |

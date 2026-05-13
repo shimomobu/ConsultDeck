@@ -6,7 +6,10 @@ from consultdeck.llm.protocol import LlmProvider
 from consultdeck.llm.request import GeneratedSlideContent, LlmGenerationResult
 
 
-def build_llm_provider(provider_name: str) -> LlmProvider | None:
+def build_llm_provider(
+    provider_name: str,
+    model_name: str = "gemma4:latest",
+) -> LlmProvider | None:
     if provider_name == "none":
         return None
     if provider_name == "fake":
@@ -23,6 +26,6 @@ def build_llm_provider(provider_name: str) -> LlmProvider | None:
             )
         )
     if provider_name == "ollama":
-        return OllamaLlmProvider()
+        return OllamaLlmProvider(model=model_name)
 
     raise ValueError(f"Unsupported llm provider: {provider_name}")

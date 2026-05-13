@@ -15,7 +15,7 @@ class OllamaLlmProvider:
         self,
         *,
         base_url: str = "http://127.0.0.1:11434",
-        model: str = "gemma3",
+        model: str = "gemma4:latest",
         timeout_seconds: float = 30.0,
         prompt_builder: LlmPromptBuilder | Any | None = None,
         response_parser: LlmResponseParser | Any | None = None,

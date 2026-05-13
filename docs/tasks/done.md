@@ -29,3 +29,4 @@
 - [x] TASK-028: Phase 6 Ollama実装前レビュー指摘対応
 - [x] TASK-026: Implement OllamaLlmProvider with fake HTTP tests
 - [x] TASK-029: Fix Ollama provider response lifecycle and risk register review follow-up
+- [x] TASK-030: Add CLI-configurable Ollama model selection
