@@ -13,6 +13,7 @@ from consultdeck.slide.content_generator import (
     GeneratedSlideContent,
     LlmGenerationResult,
 )
+from consultdeck.slide.builder import SlideBuilder
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
@@ -135,3 +136,26 @@ def test_pipeline_passes_llm_provider_to_slide_builder(tmp_path) -> None:
     assert renderer.received_spec is not None
     assert renderer.received_spec.slides[0].message == "Fake provider message"
     assert renderer.received_spec.slides[0].bullets == ["fake bullet"]
+
+
+def test_pipeline_rejects_slide_builder_and_llm_provider_together() -> None:
+    provider = FakeLlmProvider(
+        LlmGenerationResult(
+            slides=[
+                GeneratedSlideContent(
+                    slide_id="slide-001",
+                    message="Fake provider message",
+                )
+            ]
+        )
+    )
+
+    with pytest.raises(
+        ValueError,
+        match="slide_builder and llm_provider cannot be used together",
+    ):
+        Pipeline(
+            template_dir=TEMPLATE_DIR,
+            slide_builder=SlideBuilder(),
+            llm_provider=provider,
+        )

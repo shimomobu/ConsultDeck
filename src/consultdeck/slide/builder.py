@@ -3,16 +3,16 @@ from uuid import uuid4
 
 from pydantic import ValidationError
 
+from consultdeck.llm.protocol import LlmProvider
+from consultdeck.llm.request import (
+    GeneratedSlideContent,
+    LlmGenerationRequest,
+    LlmTemplateContext,
+)
 from consultdeck.models.outline_spec import OutlineItem, OutlineSpec
 from consultdeck.models.requirement_spec import RequirementSpec
 from consultdeck.models.slide_spec import LayoutType, Slide, SlideSpec
 from consultdeck.models.template_spec import TemplateSpec
-from consultdeck.slide.content_generator import (
-    GeneratedSlideContent,
-    LlmGenerationRequest,
-    LlmProvider,
-    LlmTemplateContext,
-)
 
 
 class SlideBuildError(ValueError):

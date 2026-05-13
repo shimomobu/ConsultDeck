@@ -147,6 +147,12 @@ def test_main_accepts_fake_llm_provider_option(tmp_path, capsys) -> None:
     assert exit_code == 0
     assert capsys.readouterr().out.strip() == str(output_path)
     assert output_path.exists()
+    presentation = Presentation(output_path)
+    slide_text = "\n".join(
+        shape.text for shape in presentation.slides[0].shapes if hasattr(shape, "text")
+    )
+    assert "Fake provider bullet" in slide_text
+    assert "課題の要点を確認する" not in slide_text
 
 
 def test_llm_provider_factory_returns_none_by_default() -> None:

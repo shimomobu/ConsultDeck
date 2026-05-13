@@ -1,11 +1,8 @@
 from __future__ import annotations
 
-from consultdeck.slide.content_generator import (
-    FakeLlmProvider,
-    GeneratedSlideContent,
-    LlmGenerationResult,
-    LlmProvider,
-)
+from consultdeck.llm.fake import FakeLlmProvider
+from consultdeck.llm.protocol import LlmProvider
+from consultdeck.llm.request import GeneratedSlideContent, LlmGenerationResult
 
 
 def build_llm_provider(provider_name: str) -> LlmProvider | None:

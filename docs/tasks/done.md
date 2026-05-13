@@ -26,3 +26,4 @@
 - [x] TASK-023: Implement LlmPromptBuilder
 - [x] TASK-024: Implement LlmResponseParser
 - [x] TASK-025: Add LLM provider factory and minimal CLI injection path
+- [x] TASK-028: Phase 6 Ollama実装前レビュー指摘対応

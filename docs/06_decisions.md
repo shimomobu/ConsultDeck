@@ -159,3 +159,11 @@
 - Decision: LLM本文生成は`LlmProvider` Protocolから`LlmGenerationResult`を受け取り、SlideBuilderがSlideSpecへ反映する。Provider未指定または失敗時はdeterministic contentへfallbackする。
 - Rationale: SlideSpecを中心契約として維持し、RendererへLLM概念を持ち込まず、将来のOllama等のProvider差し替えを小さな境界で可能にする。
 - Details: 初期実装ではOllama接続、multi-provider化、CLIオプション追加は行わない。
+
+## Decision 023: Pipelineのllm_provider注入はデフォルトSlideBuilder生成時のショートハンドに限定する
+
+- Status: Accepted
+- Phase: 6
+- Decision: `Pipeline` は `slide_builder` と `llm_provider` が同時指定された場合に `ValueError` を送出する。
+- Rationale: `llm_provider` は `Pipeline` が内部でデフォルト `SlideBuilder` を生成する場合だけ意味を持つ。明示的な `slide_builder` と併用を許すと、どちらが優先されるかが曖昧になり、Ollama導入前の注入境界が不明瞭になる。
+- Details: カスタム `SlideBuilder` を使う場合は、その Builder 側で Provider を構成する。

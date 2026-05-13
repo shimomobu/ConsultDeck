@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from consultdeck.slide.content_generator import LlmProvider
+from consultdeck.llm.protocol import LlmProvider
 from consultdeck.models.requirement_spec import RequirementSpec
 from consultdeck.outline.builder import OutlineBuilder
 from consultdeck.renderer.base import Renderer
@@ -25,6 +25,9 @@ class Pipeline:
         llm_provider: LlmProvider | None = None,
         renderer: Renderer | None = None,
     ) -> None:
+        if slide_builder is not None and llm_provider is not None:
+            raise ValueError("slide_builder and llm_provider cannot be used together")
+
         self.template_repository = template_repository or TemplateRepository(template_dir)
         self.template_selector = template_selector or TemplateSelector()
         self.outline_builder = outline_builder or OutlineBuilder()
