@@ -60,7 +60,7 @@ def _build_parser(prog: str | None = None) -> argparse.ArgumentParser:
     parser.add_argument("--deck-id", default=None, help="出力ファイル名に使うdeck_id")
     parser.add_argument(
         "--llm-provider",
-        choices=["none", "fake"],
+        choices=["none", "fake", "ollama"],
         default="none",
         help="本文生成Provider",
     )

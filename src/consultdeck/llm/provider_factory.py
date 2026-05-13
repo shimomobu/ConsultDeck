@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from consultdeck.llm.fake import FakeLlmProvider
+from consultdeck.llm.ollama import OllamaLlmProvider
 from consultdeck.llm.protocol import LlmProvider
 from consultdeck.llm.request import GeneratedSlideContent, LlmGenerationResult
 
@@ -21,5 +22,7 @@ def build_llm_provider(provider_name: str) -> LlmProvider | None:
                 ]
             )
         )
+    if provider_name == "ollama":
+        return OllamaLlmProvider()
 
     raise ValueError(f"Unsupported llm provider: {provider_name}")

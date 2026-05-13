@@ -167,3 +167,11 @@
 - Decision: `Pipeline` は `slide_builder` と `llm_provider` が同時指定された場合に `ValueError` を送出する。
 - Rationale: `llm_provider` は `Pipeline` が内部でデフォルト `SlideBuilder` を生成する場合だけ意味を持つ。明示的な `slide_builder` と併用を許すと、どちらが優先されるかが曖昧になり、Ollama導入前の注入境界が不明瞭になる。
 - Details: カスタム `SlideBuilder` を使う場合は、その Builder 側で Provider を構成する。
+
+## Decision 024: 初回の実ProviderはOllama native `/api/generate` を固定設定で呼ぶ
+
+- Status: Accepted
+- Phase: 6
+- Decision: `OllamaLlmProvider` は native Ollama API の `POST /api/generate` を使用し、初期設定では `model="gemma3"`、`base_url="http://127.0.0.1:11434"`、`stream=False` を固定する。
+- Rationale: OpenAI互換APIやmodel可変化まで同時に広げると adapter 境界の責務がぼやけるため、まず fake HTTP tests で最小の native adapter 契約を固定する。
+- Details: prompt組み立ては `LlmPromptBuilder`、レスポンス変換は `LlmResponseParser` に委譲する。HTTP timeout は provider が持ち、HTTP失敗は呼び出し側へ返す。

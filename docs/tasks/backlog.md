@@ -14,7 +14,6 @@
 ## MVP tag follow-up
 
 - [ ] TASK-011: GitHub remote + push
-- [ ] TASK-026: Implement OllamaLlmProvider with fake HTTP tests
 - [ ] TASK-017: Minor cleanup deck_id validator readability
 - [ ] TASK-018: Minor cleanup TWO_COLUMN fallback test
 - [ ] TASK-019: Minor cleanup NonBlankString commonization

@@ -1,6 +1,7 @@
 """LLM provider integration helpers."""
 
 from consultdeck.llm.fake import FakeLlmProvider
+from consultdeck.llm.ollama import OllamaLlmProvider
 from consultdeck.llm.parser import LlmResponseParser
 from consultdeck.llm.prompt import LlmPromptBuilder
 from consultdeck.llm.protocol import LlmParseError, LlmProvider
@@ -17,6 +18,7 @@ __all__ = [
     "LlmGenerationRequest",
     "LlmGenerationResult",
     "LlmParseError",
+    "OllamaLlmProvider",
     "LlmPromptBuilder",
     "LlmProvider",
     "LlmResponseParser",
